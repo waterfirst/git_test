@@ -1,0 +1,1289 @@
+---
+title: "R course"
+author: "waterfirst"
+format:
+  html:
+    toc: true
+editor: visual
+code-fold: true
+Rendering:
+  embed-resources: true
+execute:
+  message : false
+  warning : false
+  error : false
+  echo : true
+---
+
+tidyverse 패키지를 이용하여 데이터 전처리는 데이터 분석의 가장 중요한 과정 R 초급자에게 가르쳐주기 위해 만들었습니다.
+
+<br/>
+
+To learn more about **Tidyverse** see <https://www.tidyverse.org/>.
+
+<br/> <br/>
+
+## 기초 문법
+
+[1. 데이터 형식]{style="color:red;"}
+
+```         
+숫자형(numeric) : num(숫자형), int(정수형), dbl(실수형)
+문자형(character) : chr
+범주형(factor) : fct
+논리형(logical) : logi
+결측 (Not Available) : NA
+무한대 (Infinite) : Inf
+데이터 형식 알아보기 : class(변수명) is.numeric(변수명), is.character(변수명), is.factor(변수명)
+데이터 형식 바꾸기 : as.numeric(변수명), as.factor(변수명), as.character(변수명), as.logical(변수명)
+```
+
+<br/>
+
+[2. 자주 사용 하는 함수]{style="color:red;"}
+
+```         
+평균(mean) : mean(변수)
+중위수(median) : median(변수)
+최대값(max) : max(변수)
+최소값(min) : min(변수)
+최대-최소(range) : range(변수)
+합(sum) : sum(변수)
+표준편차(sd) : sd(변수)
+분산(var) : var(변수)
+절대값(abs) : abs(변수)
+반올림(round) : round(변수, 반올림할 소수점 아래수)
+제곱근(sqrt) : sqrt(변수)
+원소갯수, 문자열길이(length) : length(변수)
+행, 열의 수(dim) : dim(df)
+프린트(print) : print(변수) / print(“문자”)
+조건(ifelse) : ifelse(x>10, “a”, “b”)
+중복없이 관측치 종류(unique, distinct) : unique(변수), df %>% distinct(열이름)
+문자패턴 찾기(grep, grepl) : grep(“문자”, df):열번호 출력, grepl(“문자”, df):true/false로 출력
+문자패턴 찾아 바꾸기(gsub) : gsub(“이전문자”, “새로운 문자”, df)
+열갯수(ncol) : ncol(df)
+행갯수(nrow) : nrow(df)
+열이름(colnames) : colnames(df)
+행이름(colnames) : rownames(df)
+열합치기(cbind, bind_cols) : cbind(df1, df2) or bind_cols(df1, df2)
+행합치기(rbind, bind_rows) : rbind(df1, df2) or bind_rows(df1, df2)
+빈도수 구하기(table) : table(변수)
+정렬하기(sort) : 내림차순 sort(변수), 오름차순 sort(변수, decreasing = TRUE)
+열이름(names, colnames) : names(변수)
+최대, 최소위치 찾기(which.max, which.min) : which.max(변수), which.min(변수)
+```
+
+<br/>
+
+[3. 연산 기호]{style="color:red;"}
+
+```         
+"
+* (곱하기) : x*2
+/ (나누기) : x/2
+%/% (나눗셈의 몫) : 16%/%3 = 5
+%% (나눗셈의 나머지) : 16%/%3 = 1
+== (일치, True or False) : 3==5, False
+!= (불일치) : 3!=5, True
+& (and) : x > 2 & x < 10
+| (or) : x < 2 | x > 10
+"
+```
+
+<br/>
+
+[4. dplyr 전처리 함수]{style="color:red;"}
+
+\[참고 자료\]<https://rstudio.github.io/cheatsheets/html/data-transformation.html>
+
+```         
+%>% (파이프라인, 왼쪽 데이터프레임을 오른쪽 함수에 넣어라) : df %>% head()
+
+filter (조건에 맞는 행 추출) : df %>% filter(컬럼명 == “a”)
+
+select(특정열 선택) : df %>% select(열번호) / df[, 열번호]
+
+slice(특정행 선택) : df %>% slice(행번호) / df[행번호, ]
+mutate(특정열 추가) : df %>% mutate(새로운 열이름 = )
+rename(열이름 바꾸기) : df %>% rename(새로운 열이름 = 이전 열이름)
+arrange(정렬하기) : 오름차순 : df %>% arrange(열이름), 내림차순 : df %>% arrange(desc(열이름))
+
+group_by(특정열 그룹화), summarise(통계치 계산) :
+
+df %>% group_by(열이름) %>% summarise(평균=mean(열이름))
+열합치기(inner_join, full_join, left_join, right_join) : inner_join(df1, df2, by=“name”)
+
+na가 있는 행 제거하기(na.omit) : na.omit(df)
+
+na가 있는 열에서 na 는 제거하고 계산하기 (na.rm=T) : mean(df, na.rm=T)
+```
+
+<br/> <br/>
+
+## 전처리 연습문제
+
+### [1. 유튜브 데일리 인기동영상 분석]{style="color:blue;"}
+
+*\[출처\] 10주차 예상문제 (실기1 유형) (이기적 스터디 카페)*
+
+dataurl =https://raw.githubusercontent.com/Datamanim/datarepo/main/youtube/youtube.csv
+
+-   패키지로드, 데이터 불러오기
+
+```{r}
+#| echo = T
+library(tidyverse)
+
+df<-read.csv("https://raw.githubusercontent.com/Datamanim/datarepo/main/youtube/youtube.csv")
+
+```
+
+------------------------------------------------------------------------
+
+-   [Q1. 인기동영상 제작횟수가 많은 채널 상위 10개명을 출력하라 (날짜기준, 중복포함)]{style="color:red;"}
+
+```{r}
+
+#Q1
+
+df%>%
+  group_by(channelTitle)%>%
+  summarise(n=n()) |> 
+  arrange(-n) |> 
+  slice(1:10)
+
+```
+
+------------------------------------------------------------------------
+
+-   [Q2. 논란으로 인기동영상이 된 케이스를 확인하고 싶다. dislikes수가 like 수보다 높은 동영상을 제작한 채널을 모두 출력하라]{style="color:red;"}
+
+```{r}
+
+#Q2
+
+df |> 
+  filter(dislikes>likes) |> 
+  select(channelTitle) |> 
+  distinct()
+
+```
+
+------------------------------------------------------------------------
+
+-   [Q3. 일요일에 인기있었던 영상들중 가장많은 영상 종류(categoryId)는 무엇인가?]{style="color:red;"}
+
+```{r}
+#Q3
+
+df |> 
+  mutate(요일 = wday(trending_date2, label=T)) |> 
+  filter(요일 == "일") |> 
+  filter(likes> dislikes) |> 
+  group_by(categoryId) |> 
+  summarise(n = n()) |> 
+  arrange(-n) |> 
+  select(1) |> 
+  slice(1)
+
+```
+
+------------------------------------------------------------------------
+
+-   [Q4. 각 요일별 인기 영상들의 categoryId는 각각 몇개 씩인지 하나의 데이터 프레임으로 표현하라]{style="color:red;"}
+
+```{r}
+#Q5
+
+df |> 
+  mutate(요일 = wday(trending_date2, label=T)) |> 
+  select(categoryId, 요일) |> 
+  table()
+
+```
+
+------------------------------------------------------------------------
+
+-   [Q5. 댓글의 수로 (comment_count) 영상 반응에 대한 판단을 할 수 있다. viewcount대비 댓글수가 가장 높은 영상을 확인하라 (view_count값이 0인 경우는 제외한다)]{style="color:red;"}
+
+```{r}
+#Q5
+
+df |> 
+  filter(view_count != 0) |> 
+  mutate(ratio = comment_count/view_count) |> 
+  arrange(-ratio)|> 
+  slice(1) |> 
+  select(title )
+
+```
+
+------------------------------------------------------------------------
+
+-   [Q6. like 대비 dislike의 수가 가장 적은 영상은 무엇인가? (like, dislike 값이 0인경우는 제외한다)]{style="color:red;"}
+
+```{r}
+#Q6
+
+df |> 
+  filter(dislikes != 0 & likes != 0) |> 
+  mutate(n = likes / dislikes) |> 
+  arrange(-n) |> 
+  slice(1) |> 
+  select(title)
+
+
+```
+
+------------------------------------------------------------------------
+
+-   [Q7. 가장많은 트렌드 영상을 제작한 채널의 이름은 무엇인가? (날짜기준, 중복포함)]{style="color:red;"}
+
+```{r}
+#Q7
+
+
+df |> 
+  group_by(channelTitle)%>%
+  summarise(n=n()) |> 
+  arrange(-n) |> 
+  slice(1)
+
+
+```
+
+------------------------------------------------------------------------
+
+-   [Q8. 20회(20일)이상 인기동영상 리스트에 포함된 동영상의 숫자는?]{style="color:red;"}
+
+```{r}
+#Q8
+
+df |> 
+  group_by(title) |> 
+  summarise(n = n()) |> 
+  filter(n >= 20) |> 
+  count()
+  
+
+```
+
+<hr/>
+
+<hr/>
+
+### [2. 넷플릭스 데이터 분석]{style="color:blue;"}
+
+*\[출처\] 9주차 예상문제 (실기1 유형) (이기적 스터디 카페)*
+
+dataurl =https://raw.githubusercontent.com/Datamanim/datarepo/main/nflx/NFLX.csv
+
+-   패키지로드, 데이터 불러오기
+
+```{r}
+#| echo = T
+df <- read.csv("https://raw.githubusercontent.com/Datamanim/datarepo/main/nflx/NFLX.csv")
+
+```
+
+-   [Q1. 매년 5월달의 open 가격의 평균값을 데이터프레임으로 표현하라.]{style="color:red;"}
+
+```{r}
+#Q1
+
+library(lubridate)
+
+df |> mutate(year = year(Date),
+             month = month(Date)) |>
+  filter(month == 5) |> 
+  group_by(year) |> 
+  summarise(평균 = mean(Open))
+  
+  
+```
+
+<hr/>
+
+<hr/>
+
+## 날짜 다루기(lubridate)
+
+To learn more about **lubridate** see <https://lubridate.tidyverse.org/>.
+
+-   패키지 설치, 불러오기
+
+```{r}
+#| echo = T
+
+#install.packages('lubridate')
+library('lubridate')
+```
+
+-   문자로 표현된 날짜를 날짜변수로 바꾸기
+
+```{r}
+#| echo = T
+
+date <- '2020-01-10'
+class(date)
+date2 <- as.Date(date)
+class(date2)
+
+```
+
+-   연, 월, 일 뽑아내기
+
+```{r}
+#| echo = T
+
+year(date)
+month(date)
+day(date)
+ymd(date)
+
+```
+
+-   주, 요일 뽑아내기
+
+```{r}
+#| echo = T
+week(date)
+wday(date)
+wday(date, label = T)
+
+```
+
+-   시간, 분, 초 뽑아내기
+
+```{r}
+#| echo = T
+now()
+time <- now()
+hour(time)
+minute(time)
+second(time)
+ymd_hms(time)
+```
+
+------------------------------------------------------------------------
+
+### [4. 2020년도 이화동(서울) , 수영동(부산)의 시간단위의 기온과 강수량 분석]{style="color:blue;"}
+
+*\[출처\] 1주차 예상문제 (실기1 유형) (이기적 스터디 카페)*
+
+dataurl = https://raw.githubusercontent.com/Datamanim/datarepo/main/weather/weather2.csv
+
+-   패키지로드, 데이터 불러오기
+
+```{r}
+#| echo = T
+library(tidyverse)
+
+df<-read.csv("https://raw.githubusercontent.com/Datamanim/datarepo/main/weather/weather2.csv")
+
+```
+
+------------------------------------------------------------------------
+
+-   [Q1. 여름철(6월,7월,8월) 이화동이 수영동보다 높은 기온을 가진 시간대는 몇개인가?]{style="color:red;"}
+
+```{r}
+
+#Q1
+
+library(lubridate)
+
+df |> 
+  mutate(월 = month(time),
+         시간 = hour(time)) |> 
+  filter(월 %in% c(6,7,8),
+         이화동기온 > 수영동기온) |> 
+  nrow()
+
+```
+
+-   [Q2. 이화동과 수영동의 최대강수량의 시간대를 각각 구하여라]{style="color:red;"}
+
+```{r}
+
+#Q2
+
+df |> 
+  filter(이화동강수 == max(이화동강수 ) ) |> 
+  select(time)
+
+df |> 
+  filter(수영동강수 == max(수영동강수)) |> 
+  select(time)
+
+```
+
+## 데이터 불러오기와 NA 처리
+
+To learn more about **tidyr** see <https://tidyr.tidyverse.org/reference/pivot_longer.html/>.
+
+데이터 분석의 첫 걸음은 데이터를 불러오는 과정이다.
+
+1.  R의 내장 데이터에서 불러오기
+
+    data() , help("AirPassengers")
+
+<https://vincentarelbundock.github.io/Rdatasets/datasets.html>
+
+```{r}
+
+data(AirPassengers)
+AirPassengers
+
+plot(AirPassengers, main = "Airline Passengers Over Time",
+     xlab = "Year-Month", ylab = "Number of Passengers")
+
+```
+
+2.  외장데이터 불러오기 (package 설치, library로 불러오기)
+
+    gapminder : 세계 여러 국가의 인구, 경제, 건강 등의 데이터를 포함
+
+```{r}
+
+#install.packages("gapminder")
+library(gapminder)
+
+data(gapminder)
+head(gapminder)
+```
+
+3.  클릭보드(엑셀)에서 붙여넣기
+
+    datapaste 패키지 설치 -\> 엑셀에서 ctrl+c -\> RStudio의 Addins에서 Paste as tribble
+
+<!-- -->
+
+4.  csv 파일에서 불러오기
+
+```{r}
+
+#| eval: true
+
+ #  read.csv ("D:/r/data/test.csv")       ## **/** 방향 주의
+ #  read.csv ("D:\\r\\data\\test.csv")    ## **\\** 방향 주의
+   
+```
+
+5.  엑셀파일 불러오기 <https://readxl.tidyverse.org/>
+
+```{r}
+
+#| eval: true
+
+#   install.packages('readxl')
+#   library(readxl)
+#   read_excel("my_file.xls")
+   
+```
+
+6.  NA 처리하기 <https://tidyr.tidyverse.org/reference/fill.html>
+
+```{r}
+sales <- tibble::tribble(
+  ~quarter, ~year, ~sales,
+  "Q1",    2000,    66013,
+  "Q2",      NA,    69182,
+  "Q3",      NA,    53175,
+  "Q4",      NA,    21001,
+  "Q1",    2001,    46036,
+  "Q2",      NA,    58842,
+  "Q3",      NA,    44568,
+  "Q4",      NA,    50197,
+  "Q1",    2002,    39113,
+  "Q2",      NA,    41668,
+  "Q3",      NA,    30144,
+  "Q4",      NA,    52897,
+  "Q1",    2004,    32129,
+  "Q2",      NA,    67686,
+  "Q3",      NA,    31768,
+  "Q4",      NA,    49094
+)
+
+
+# `fill()` defaults to replacing missing data from top to bottom
+sales %>% fill(year, .direction = "down")
+```
+
+7.  NA를 평균, 중앙값으로 대체하기
+
+```{r}
+head(airquality)
+colSums(is.na(airquality))
+
+airquality |> 
+  mutate(Ozone = ifelse(is.na(Ozone), mean(Ozone, na.rm=T), Ozone),
+         Solar.R = ifelse(is.na(Ozone), median(Ozone, na.rm=T), Solar.R)) -> airquality2
+
+colSums(is.na(airquality2))
+
+
+```
+
+## long-form (pivot_longer)
+
+pivot_longer : <https://tidyr.tidyverse.org/reference/pivot_longer.html> pivot_wider : <https://tidyr.tidyverse.org/reference/pivot_wider.html>
+
+![](data/longform_wideform.png){width="719"}
+
+iris 데이터 : wide form 을 long form으로 만들기
+
+```{r}
+
+head(iris)
+
+iris |> pivot_longer(cols = Sepal.Length: Petal.Width, names_to = "measure", values_to = "value") |> head()
+
+```
+
+## 시각화 하기
+
+\[참고 자료\]<https://waterfirst.quarto.pub/r_course/#/title-slide> \[참고 자료\]<https://rstudio.github.io/cheatsheets/html/data-visualization.html>
+
+ChickWeight 데이터셋:
+
+weight: 닭의 체중 Time: 실험 시간 Chick: 닭의 고유 식별자 Diet: 실험 그룹을 나타내는 범주형 변수로, 각 닭이 어떤 종류의 식사를 받았는지를 나타냅니다.
+
+```{r}
+head(ChickWeight)
+
+ChickWeight |> ggplot(aes(Time, weight, col=Chick, fill=Diet))+geom_point()+
+  geom_line()+
+  facet_wrap(~Diet,)+
+  theme(legend.position = "none")
+```
+
+### 산점도 그래프
+
+\[참고자료\]<https://ggplot2.tidyverse.org/index.html>
+
+```{r}
+library(tidyverse)
+
+ggplot(mpg, aes(cty, hwy)) +
+  geom_point(mapping = aes(colour = displ)) +
+  geom_smooth(formula = y ~ x, method = "lm") +
+  scale_colour_viridis_c() +
+  facet_grid(year ~ drv) +
+  coord_fixed() +
+  theme_minimal() +
+  theme(panel.grid.minor = element_blank())
+
+
+```
+
+### Color 팔레트
+
+```{r}
+library(RColorBrewer)
+display.brewer.all()
+```
+
+사용법 :
+
+scale_fill_brewer(palette="Set1")
+
+scale_colour_brewer(palette="Set1")
+
+\[Color Pick Up\](<https://r-graph-gallery.com/ggplot2-color.html>)
+
+\[Colorspace 패키지\](<https://m.blog.naver.com/regenesis90/222234511150>)
+
+\[Sci-Fi\](<https://cran.r-project.org/web/packages/ggsci/vignettes/ggsci.html>)
+
+### 막대 그래프
+
+\[참고자료\]<https://r-charts.com/ranking/bar-plot-ggplot2/>
+
+```{r}
+# install.packages("ggplot2")
+library(ggplot2)
+df <- data.frame(group = c("A", "B", "C"),
+                 count = c(3, 5, 6))
+ggplot(df, aes(x = group, y = count)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = count), vjust = -1, colour = "black") +
+  ylim(c(0, 6.5)) # Increase the limits of the Y-axis if needed 
+  
+```
+
+```{r}
+
+# install.packages("ggplot2")
+library(ggplot2)
+
+ggplot(df, aes(x = group, y = count)) +
+  geom_col() 
+
+```
+
+### Boxplot 그래프
+
+\[참고자료\]<https://ggplot2.tidyverse.org/reference/geom_boxplot.html>
+
+```{r}
+
+
+ggplot(mpg, aes(class, hwy)) + geom_boxplot(aes(colour = drv))
+
+```
+
+### viloin 그래프
+
+\[참고자료\]<https://r-charts.com/es/distribucion/grafico-violin-grupo-ggplot2/>
+
+```{r}
+
+
+# install.packages("ggplot2")
+library(ggplot2)
+
+ggplot(warpbreaks, aes(x = tension, y = breaks, fill = tension)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.07) 
+
+
+```
+
+### Density 그래프
+
+\[참고자료\]<https://r-charts.com/es/distribucion/grafico-densidad-grupo-ggplot2/>
+
+```{r}
+
+# Datos
+set.seed(5)
+x <- c(rnorm(200, mean = -2, 1.5),
+       rnorm(200, mean = 0, sd = 1),
+       rnorm(200, mean = 2, 1.5))
+grupo <- c(rep("A", 200), rep("B", 200), rep("C", 200))
+df <- data.frame(x, grupo)
+
+# install.packages("ggplot2")
+library(ggplot2)
+
+cols <- c("#F76D5E", "#FFFFBF", "#72D8FF")
+
+# Gráfico de densidad en ggplot2
+ggplot(df, aes(x = x, fill = grupo)) +
+  geom_density(alpha = 0.7) + 
+  scale_fill_manual(values = cols) 
+ 
+
+```
+
+### Pair 그래프
+
+\[참고자료\]<https://r-charts.com/es/correlacion/ggpairs/>
+
+```{r}
+
+# install.packages("GGally")
+library(GGally)
+
+ggpairs(iris)  
+
+# install.packages("GGally")
+library(GGally)
+
+ggpairs(iris, columns = 1:4, aes(color = Species, alpha = 0.5),
+        upper = list(continuous = "points")) 
+
+
+```
+
+### Sankey 그래프
+
+\[참고자료\]<https://r-charts.com/es/flujo/diagrama-sankey-ggplot2/>
+
+```{r}
+
+# install.packages("remotes")
+# remotes::install_github("davidsjoberg/ggsankey")
+
+library(ggsankey)
+df <- mtcars %>%
+  make_long(cyl, vs, am, gear, carb) 
+
+# install.packages("remotes")
+# remotes::install_github("davidsjoberg/ggsankey")
+library(ggsankey)
+# install.packages("ggplot2")
+library(ggplot2)
+# install.packages("dplyr")
+library(dplyr) # Necesario
+
+ggplot(df, aes(x = x, 
+               next_x = next_x, 
+               node = node, 
+               next_node = next_node,
+               fill = factor(node),
+               label = node)) +
+  geom_sankey(flow.alpha = 0.5, node.color = 1) +
+  geom_sankey_label(size = 3.5, color = 1, fill = "white") +
+  scale_fill_viridis_d() +
+  theme_sankey(base_size = 16) +
+  theme(legend.position = "none") 
+
+```
+
+### 국회의원의석수 그래프
+
+\[참고자료\]<https://r-charts.com/es/parte-todo/ggparliament/>
+
+```{r}
+# install.packages("ggparliament")
+library(ggparliament)
+# install.packages("tidyverse")
+library(tidyverse)
+# Datos
+ru <- election_data %>%
+  filter(country == "Russia" & year == 2016)
+# Data frame a ser usado
+ru_semicircle <- parliament_data(election_data = ru,
+                                 type = "semicircle", # Tipo de parlamento
+                                 parl_rows = 10,      # Número de filas del parlamento
+                                 party_seats = ru$seats) # Asientos por partido
+
+ggplot(ru_semicircle, aes(x = x, y = y, colour = party_short)) +
+  geom_parliament_seats() + 
+  theme_ggparliament() +
+  labs(title = "Rusia, 2016") +
+  scale_colour_manual(values = ru_semicircle$colour, 
+                      limits = ru_semicircle$party_short)  
+ 
+ 
+ 
+
+```
+
+대한민국 22대 국회의원 의석수를 표시하시오 <https://open.assembly.go.kr/portal/assm/assmPartyNegotiationPage.do> \[color hexacode\]<https://htmlcolorcodes.com/>
+
+```{r}
+
+
+library(ggparliament)
+df <- tibble::tribble(
+  ~번호,   ~전국,       ~정당,   ~명,
+   1L, "지역구",  "더불어민주당", 161L,
+   2L, "지역구",    "국민의힘",  90L,
+   3L, "지역구",   "새로운미래",   1L,
+   4L, "지역구",    "개혁신당",   1L,
+   5L, "지역구",     "진보당",   1L,
+   6L,  "비례", "더불어민주연합",  14L,
+   7L,  "비례",   "국민의미래",  18L,
+   8L,  "비례",    "개혁신당",   2L,
+   9L,  "비례",   "조국혁신당",  12L
+  ) |> 
+  mutate(no = c(1,3,4,2,9,6,7,8,5))
+
+ 
+
+df_semicircle <- parliament_data(election_data = df,
+                                 type = "semicircle", 
+                                 parl_rows = 10,      
+                                 party_seats = df$명) 
+
+
+ggplot(df_semicircle, aes(x = x, y = y, colour =fct_reorder(정당, -명))) +
+  geom_parliament_seats() + 
+  theme_ggparliament() +
+  labs(title = "South Korea, 2024") +
+  scale_colour_manual(values = c("#0000FF", "#FF0000", 
+                                 "#FF0000", "#0000FF", 
+                                 "#0073CF", "#FFB233", 
+                                 "#33FF42", "#E333FF"))
+
+
+```
+
+### 그래프 분할하기
+
+-   facet_grid
+
+```{r}
+#create data frame
+df <- data.frame(team=c('A', 'A', 'A', 'A', 'B', 'B', 'B', 'B'),
+                 position=c('G', 'G', 'F', 'F', 'G', 'G', 'G', 'G'),
+                 points=c(8, 14, 20, 22, 25, 29, 30, 31),
+                 assists=c(10, 5, 5, 3, 8, 6, 9, 12))
+
+ggplot(df, aes(assists, points)) +
+  geom_point() +
+  facet_grid(position~team)
+
+```
+
+-   facet_warp
+
+```{r}
+ggplot(df, aes(assists, points)) +
+  geom_point() +
+  facet_wrap(position~team)
+```
+
+### Patchwork 패키지
+
+```{r}
+library(patchwork)
+
+p1 <- ggplot(mtcars) + geom_point(aes(mpg, disp))
+p2 <- ggplot(mtcars) + geom_boxplot(aes(gear, disp, group = gear))
+
+p1 + p2
+```
+
+```{r}
+p3 <- ggplot(mtcars) + geom_smooth(aes(disp, qsec))
+p4 <- ggplot(mtcars) + geom_bar(aes(carb))
+
+(p1 | p2 | p3) /
+      p4
+```
+
+### 논문용 Theme
+
+```{r}
+theme_Publication <- function(base_size=14, base_family="helvetica") {
+  library(grid)
+  library(ggthemes)
+  (theme_foundation(base_size=base_size, base_family=base_family)
+    + theme(plot.title = element_text(face = "bold",
+                                      size = rel(1.2), hjust = 0.5),
+            text = element_text(),
+            panel.background = element_rect(colour = NA),
+            plot.background = element_rect(colour = NA),
+            panel.border = element_rect(colour = NA),
+            axis.title = element_text(face = "bold",size = rel(1)),
+            axis.title.y = element_text(angle=90,vjust =2),
+            axis.title.x = element_text(vjust = -0.2),
+            axis.text = element_text(), 
+            axis.line = element_line(colour="black"),
+            axis.ticks = element_line(),
+            panel.grid.major = element_line(colour="#f0f0f0"),
+            panel.grid.minor = element_blank(),
+            legend.key = element_rect(colour = NA),
+            legend.position = "bottom",
+            legend.direction = "horizontal",
+            legend.key.size= unit(0.2, "cm"),
+            legend.margin = unit(0, "cm"),
+            legend.title = element_text(face="italic"),
+            plot.margin=unit(c(10,5,5,5),"mm"),
+            strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0"),
+            strip.text = element_text(face="bold")
+    ))
+  
+}
+
+scale_fill_Publication <- function(...){
+  library(scales)
+  discrete_scale("fill","Publication",manual_pal(values = c("#386cb0","#fdb462","#7fc97f","#ef3b2c","#662506","#a6cee3","#fb9a99","#984ea3","#ffff33")), ...)
+  
+}
+
+scale_colour_Publication <- function(...){
+  library(scales)
+  discrete_scale("colour","Publication",manual_pal(values = c("#386cb0","#fdb462","#7fc97f","#ef3b2c","#662506","#a6cee3","#fb9a99","#984ea3","#ffff33")), ...)
+  
+}
+
+```
+
+### Plotly 그래프
+
+```{r}
+
+library(ggplot2)
+library(ggrepel)
+library(dplyr)
+
+
+temp.dat <- structure(list(Year = c("2003", "2004", "2005", "2006", "2007", 
+                                    "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2003", 
+                                    "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", 
+                                    "2012", "2013", "2014", "2003", "2004", "2005", "2006", "2007", 
+                                    "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2003", 
+                                    "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", 
+                                    "2012", "2013", "2014"), State = structure(c(1L, 1L, 1L, 1L, 
+                                                                                 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 
+                                                                                 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 
+                                                                                 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L), .Label = c("VIC", 
+                                                                                                                                             "NSW", "QLD", "WA"), class = "factor"), Capex = c(5.35641472365348, 
+                                                                                                                                                                                               5.76523240652641, 5.24727577535625, 5.57988239709746, 5.14246402568366, 
+                                                                                                                                                                                               4.96786288162828, 5.493190785287, 6.08500616799372, 6.5092228474591, 
+                                                                                                                                                                                               7.03813541623157, 8.34736513875897, 9.04992300432169, 7.15830329914056, 
+                                                                                                                                                                                               7.21247045701994, 7.81373928617117, 7.76610217197542, 7.9744994967006, 
+                                                                                                                                                                                               7.93734452080786, 8.29289899132255, 7.85222269563982, 8.12683746325074, 
+                                                                                                                                                                                               8.61903784301649, 9.7904327253813, 9.75021175267288, 8.2950673974226, 
+                                                                                                                                                                                               6.6272705639724, 6.50170524635367, 6.15609626379471, 6.43799637295979, 
+                                                                                                                                                                                               6.9869551384028, 8.36305663640294, 8.31382617231745, 8.65409824343971, 
+                                                                                                                                                                                               9.70529678167458, 11.3102788081848, 11.8696420977237, 6.77937303542605, 
+                                                                                                                                                                                               5.51242844820827, 5.35789621712839, 4.38699327451101, 4.4925792218211, 
+                                                                                                                                                                                               4.29934654081527, 4.54639175257732, 4.70040615159951, 5.04056109514957, 
+                                                                                                                                                                                               5.49921208937735, 5.96590909090909, 6.18700407463007)), class = "data.frame", row.names = c(NA, 
+                                                                                                                                                                                                                                                                                           -48L), .Names = c("Year", "State", "Capex"))
+
+
+head(temp.dat)
+library(ggplot2)
+library(ggrepel)
+library(dplyr)
+
+
+p <- temp.dat %>%
+  mutate(label = if_else(Year == max(Year), as.character(State), NA_character_)) %>%
+  ggplot(aes(x = Year, y = Capex, group = State, colour = State, shape=State)) + 
+  geom_line() + geom_point()+
+  geom_label_repel(aes(label = label),
+                   nudge_x = 1,
+                   na.rm = TRUE)+
+  scale_colour_Publication()+ theme_Publication()+
+  theme(legend.position = "none")
+p
+
+library(plotly)
+ggplotly(p)
+```
+
+### 그래프 저장
+
+```{r}
+p
+ggsave("myplot.png")
+
+p2 <- ggplotly(p)
+htmlwidgets::saveWidget(p2, "myplot.html")
+```
+
+### 시각화 연습 문제
+
+아래 사이트에서 포토 코팅/노광/현상 시간에 따른 2종의 PR 의 CD를 분석하라.
+
+\[Kaggle site\]<https://www.kaggle.com/datasets/waterfirst/photolithography-process-data>
+
+## 머신러닝
+
+### 회귀(regression) : 펭귄부리 높이
+
+```         
+1. penquin 데이터의 행번호를 id 열로 만들어라 (mutate)  
+
+2. penquin 데이터의 1행~300행까지 데이터를 train으로 만들고, bill_depth 열을 제외하고 X_train, id와 bill_depth 열을 이용하여 y_train을 만들어라  
+
+3. penquin 데이터의 300행~마지막행까지  데이터를 test 로 만들고, bill_depth 열을 제외하고 y_train, id와 bill_depth 열을 이용하여 y_test을 만들어라.     
+
+4. X_train, y_train 으로 모델링을 한 후, X_test를 이용하여 y_test의 bill_depth를 예측하라.
+
+5. 예측한 값을 "수험번호.csv" 파일로 제출하라.
+```
+
+-   패키지 불러오기
+
+```{r}
+library(dplyr)
+library(caret)
+library(ModelMetrics)
+library(randomForest)
+library(palmerpenguins)
+
+
+```
+
+-   데이터 불러오기
+
+```{r}
+## 데이터 불러오기 (실제 시험장에서는 아래와 같이 간단하게 불러옴)
+
+#X_train <- read.csv("../input/.../X_train.csv", stringsAsFactors=T)
+#y_train <- read.csv("../input/.../y_train.csv", stringsAsFactors=T)
+
+#X_test <- read.csv("../input/.../X_test.csv", stringsAsFactors=T)
+#y_test <- read.csv("../input/.../y_test.csv", stringsAsFactors=T)
+
+#penquin 데이터를 이용하여 데이터 train, test 데이터 만들기
+
+penguins <- penguins %>% mutate(id=1:nrow(penguins)) |> 
+  rename(bill_depth = bill_depth_mm,
+         bill_length = bill_length_mm ,
+         flipper_length  = flipper_length_mm,
+         body_mass  = body_mass_g )
+
+X_train <- penguins[1:300, -4]
+y_train <- penguins[1:300, c(4,9)]
+X_test <- penguins[301:344, -4]
+y_test <- penguins[301:344, c(4,9)]
+y_test[,1] <- 0
+```
+
+-   데이터 합치기
+
+```{r}
+train<-inner_join(y_train, X_train, by="id")
+
+str(train)
+str(X_test)
+
+```
+
+-   불필요한 컬럼 제거하기
+
+```{r}
+# id 열 제거하기
+train<- train[,-2]
+test<-X_test[,-8]
+
+# na 가 있는 열 확인하기
+colSums(is.na(train)) 
+```
+
+-   NA가 있는지 확인하기
+
+```{r}
+colSums(is.na(test))
+```
+
+-   NA가 있는 행 삭제하기
+
+```{r}
+# na 가 있는 열 제거하기
+train<- train %>% na.omit()
+test<- test %>% na.omit()
+```
+
+-   훈련용/검증용 데이터 나누기
+
+```{r}
+#훈련/검증 데이터  70:30 으로 나누기
+
+idx<-createDataPartition(train$bill_depth, p=0.7, list=F)
+train_df<-train[idx,]
+test_df<-train[-idx,]
+```
+
+-   모델 만들고 학습시키기
+
+```{r}
+m1<-train(bill_depth~., data=train_df, method="glm") #로지스틱 회귀 모델
+
+m2<-randomForest(bill_depth~., data=train_df, ntree=100) #랜덤포레스트 모델
+```
+
+-   학습된 모델로 예측하기
+
+```{r}
+p1<-predict(m1, test_df)
+
+p2<-predict(m2, test_df)
+```
+
+-   모델 정합도 평가하기 (R\^2 로 판단)
+
+```{r}
+caret::R2(test_df$bill_depth, p1) #로지스틱 회귀분석
+caret::R2(test_df$bill_depth, p2) #랜덤포레스트
+```
+
+-   최종모델로 모델링, 예측하기
+
+```{r}
+## 랜덤포레스트 모델로 최종 모델링 하기
+
+
+m<-randomForest(bill_depth~., data=train, ntree=100)
+
+p<-predict(m, test)
+```
+
+-   데이터 제출하기
+
+```{r}
+## p값을 문자열로 바꾸고 csv 파일로 제출하기
+
+p<-as.character(p)
+y_test$species <- p
+
+write.csv(y_test, "1234.csv", row.names=F)
+
+
+## 제출된 값 다시 한번 확인하기
+
+abc<-read.csv("1234.csv")
+
+head(abc)
+```
+
+### 회귀연습문제
+
+-   중고차 가격 예측하기
+
+\[DATA\]<https://www.kaggle.com/datasets/kukuroo3/used-car-price-dataset-competition-format/versions/1>
+
+### 분류(Classification) : 펭귄종류
+
+```         
+1. penquin 데이터의 행번호를 id 열로 만들어라 (mutate)  
+
+2. penquin 데이터의 1행~300행까지 데이터를 train으로 만들고, bill_depth 열을 제외하고 X_train, id와 bill_depth 열을 이용하여 y_train을 만들어라  
+
+3. penquin 데이터의 300행~마지막행까지  데이터를 test 로 만들고, bill_depth 열을 제외하고 y_train, id와 bill_depth 열을 이용하여 y_test을 만들어라.     
+
+4. X_train, y_train 으로 모델링을 한 후, X_test를 이용하여 y_test의 bill_depth를 예측하라.
+
+5. 예측한 값을 "수험번호.csv" 파일로 제출하라.
+```
+
+-   패키지 불러오기
+
+```{r}
+library(dplyr)
+library(caret)
+library(ModelMetrics)
+library(randomForest)
+
+```
+
+-   데이터 불러오기
+
+```{r}
+## 데이터 불러오기 (실제 시험장에서는 아래와 같이 간단하게 불러옴)
+
+#X_train <- read.csv("../input/.../X_train.csv", stringsAsFactors=T)
+#y_train <- read.csv("../input/.../y_train.csv", stringsAsFactors=T)
+
+#X_test <- read.csv("../input/.../X_test.csv", stringsAsFactors=T)
+#y_test <- read.csv("../input/.../y_test.csv", stringsAsFactors=T)
+
+#penquin 데이터를 이용하여 데이터 train, test 데이터 만들기
+rm(list=ls())
+penguins <- penguins %>% mutate(id=1:nrow(penguins)) |> 
+  rename(bill_depth = bill_depth_mm,
+         bill_length = bill_length_mm ,
+         flipper_length  = flipper_length_mm,
+         body_mass  = body_mass_g )
+
+X_train <- penguins[1:300, -1]
+y_train <- penguins[1:300, c(1,9)]
+X_test <- penguins[301:344, -1]
+y_test <- penguins[301:344, c(1,9)]
+y_test[,1] <- 0
+```
+
+-   데이터 합치기
+
+```{r}
+train<-inner_join(y_train, X_train, by="id")
+
+str(train)
+str(X_test)
+```
+
+-   불필요한 컬럼 제거하기
+
+```{r}
+# id 열 제거하기
+train<- train[,-2]
+test<-X_test[,-8]
+
+# na 가 있는 열 확인하기
+colSums(is.na(train)) 
+colSums(is.na(test))
+
+# na 가 있는 열 제거하기
+train<- train %>% na.omit()
+test<- test %>% na.omit()
+```
+
+-   훈련용/ 검증용 데이터 분리
+
+```{r}
+#훈련/검증 데이터  70:30 으로 나누기
+
+idx<-createDataPartition(train$species, p=0.7, list=F)
+train_df<-train[idx,]
+test_df<-train[-idx,]
+```
+
+-   모델 만들기
+
+```{r}
+m1<-train(species~., data=train_df, method="rpart") #의사결정나무 모델
+
+m2<-randomForest(species~., data=train_df, ntree=100) #랜덤포레스트 모델
+```
+
+-   예측하기
+
+```{r}
+p1<-predict(m1, test_df)
+
+p2<-predict(m2, test_df)
+```
+
+-   모델 평가히기
+
+```{r}
+caret::confusionMatrix(test_df$species, p1)$overall[1] #의사결정나무/accuracy
+caret::confusionMatrix(test_df$species, p1)$byClass[7] #의사결정나무/F1
+
+caret::confusionMatrix(test_df$species, p2)$overall[1] #랜덤포레스트/accuracy
+caret::confusionMatrix(test_df$species, p2)$byClass[7] #랜덤포레스트/F1
+```
+
+-   최종모델로 모델링, 예측하기
+
+```{r}
+## 랜덤포레스트 모델로 최종 모델링 하기
+
+
+m<-randomForest(species~., data=train, ntree=100)
+
+p<-predict(m, test)
+```
+
+-   데이터 제출하기
+
+```{r}
+## p값을 문자열로 바꾸고 csv 파일로 제출하기
+
+p<-as.character(p)
+y_test$species <- p
+
+
+write.csv(y_test, "1234.csv", row.names=F)
+
+
+## 제출된 값 다시 한번 확인하기 
+
+abc<-read.csv("1234.csv")
+
+head(abc)  
+```
+
+### 분류연습문제
+
+-   이직할 사람 찾아내기
+
+\[DATA\]<https://www.kaggle.com/datasets/kukuroo3/hr-data-predict-change-jobscompetition-form/versions/1>
+
+```{=html}
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js""></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+    // onClick function for all plots (img's)
+    $('img:not(.zoomImg)').click(function() {
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+    });
+    // onClick function for zoomImg
+    $('img.zoomImg').click(function() {
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+    });
+  });
+</script>
+```

@@ -1,0 +1,1219 @@
+---
+title: "디지털 글쓰기 수업"
+author: "waterfirst"
+format:
+  html:
+    toc: true
+    embed-resources: true
+    
+editor: visual
+code-fold: true
+execute:
+  message : false
+  warning : false
+  error : false
+  echo : true
+---
+
+## 1 Introduction
+
+이 수업은 코딩을 전혀 모르는 사람들을 대상으로 디지털글쓰기 수업을 위해 만들었습니다.
+
+자신만의 포트폴리오, 레포트, 웹페이지를 만드는 마크다운 방식의 글쓰기를 먼저 배울것입니다.
+
+그리고 그 내용물을 채울 때 필요한 R 언어에 대한 기초를 배우고, 텍스트 분석까지 해보는 것을 목표로 하고 있습니다.
+
+R 언어 간단 소개
+
+두명의 뉴질랜드 통계학자가 만듦 : 로버트 젠틀맨(Robert Gentleman)과 로스 이하카(Ross Ihaka)
+
+해들리 위컴에 의해 빅데이터 툴로 발전함 (대표적 : ggplot, tidyverse) <br/>
+
+![](https://149357281.v2.pressablecdn.com/wp-content/uploads/2017/09/9.28-1.png)
+
+줄리아실기 : 문자분석(tidytext), 머신러닝(tidymodel)
+
+![](https://use-r.kr/fig/julia_silge.jpg)
+
+언어의 특징 : 1부터 시작 (다른 언어들은 0부터 시작)
+
+-   패키지 설치 / 불러오기 : install.packages(“패키지이름”) / library(패키지이름)
+
+### 프로그램 구분
+
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FHzmVo%2FbtqYo0P6SWZ%2FtDiMUtNpC8VETbYmmx7nW1%2Fimg.png)
+
+이 많은 것을 다 배워야 할까? 어렵다.
+
+R에서 프론트엔드를 하려면 어떻게 할까? 즉 눈에 보이는 문서, 웹페이지를 만들려면?
+
+**Quarto**는 **RMarkdown** 기반 **디지털 글쓰기** 양식이다.
+
+R도 모르는데 Quarto는 또 무엇인가?
+
+잘 모르지만 이 강의를 듣게 되면 무엇을 할 수 있는지를 보자.
+
+![](./images/Clipboard01.png)
+
+<https://quarto.org/docs/gallery/>
+
+<https://r2bit.com/bitSlide/dashboard_202404.html#/%EC%BF%BC%ED%86%A0-1>
+
+### **강의 순서**
+
+1.  Markdown 문법 배우기 (1주차)
+
+    <https://quarto.org/docs/authoring/markdown-basics.html>
+
+2.  Documents 를 좀 더 확장해서 배우기 (2주차)
+
+    <https://quarto.org/docs/presentations/revealjs/>
+
+3.  Dashboard 만들기 (3주차)
+
+    <https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/>
+
+4.  텍스트 분석 (4주차)
+
+    -   문자열 정제 (stringr)
+
+    -   관계도 분석 (tidygraph, ggraph)
+    
+
+참고사이트 <br/>
+
+\[문자열함수 : stringr\]<https://bookdown.org/sulgi/r4ds/strings.html>
+
+\[한국문자분석 : bitNLP\]<https://github.com/bit2r/bitNLP>
+
+\[문자분석 : tidytext\]<https://github.com/juliasilge/tidytext> <br/>
+
+\[관계망 분석 : tidygraph\]<https://github.com/thomasp85/tidygraph> <br/>
+
+\[관계망 분석 : ggraph\] <https://github.com/thomasp85/ggraph> <br/>
+
+\[Quarto 문서화 : quarto\]<https://quarto.org/docs/presentations/revealjs/>
+
+------------------------------------------------------------------------
+
+```{=html}
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js""></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+    // onClick function for all plots (img's)
+    $('img:not(.zoomImg)').click(function() {
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+    });
+    // onClick function for zoomImg
+    $('img.zoomImg').click(function() {
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+    });
+  });
+</script>
+```
+## 2 기초 문법
+
+[1. 데이터 형식]{style="color:red;"}
+
+```         
+숫자형(numeric) : num(숫자형), int(정수형), dbl(실수형)
+문자형(character) : chr
+범주형(factor) : fct
+논리형(logical) : logi
+결측 (Not Available) : NA
+무한대 (Infinite) : Inf
+데이터 형식 알아보기 : class(변수명) is.numeric(변수명), is.character(변수명), is.factor(변수명)
+데이터 형식 바꾸기 : as.numeric(변수명), as.factor(변수명), as.character(변수명), as.logical(변수명)
+```
+
+<br/>
+
+[2. 자주 사용 하는 함수]{style="color:red;"}
+
+```         
+평균(mean) : mean(변수)
+중위수(median) : median(변수)
+최대값(max) : max(변수)
+최소값(min) : min(변수)
+최대-최소(range) : range(변수)
+합(sum) : sum(변수)
+표준편차(sd) : sd(변수)
+분산(var) : var(변수)
+절대값(abs) : abs(변수)
+반올림(round) : round(변수, 반올림할 소수점 아래수)
+제곱근(sqrt) : sqrt(변수)
+원소갯수, 문자열길이(length) : length(변수)
+행, 열의 수(dim) : dim(df)
+프린트(print) : print(변수) / print(“문자”)
+조건(ifelse) : ifelse(x>10, “a”, “b”)
+중복없이 관측치 종류(unique, distinct) : unique(변수), df %>% distinct(열이름)
+문자패턴 찾기(grep, grepl) : grep(“문자”, df):열번호 출력, grepl(“문자”, df):true/false로 출력
+문자패턴 찾아 바꾸기(gsub) : gsub(“이전문자”, “새로운 문자”, df)
+열갯수(ncol) : ncol(df)
+행갯수(nrow) : nrow(df)
+열이름(colnames) : colnames(df)
+행이름(colnames) : rownames(df)
+열합치기(cbind, bind_cols) : cbind(df1, df2) or bind_cols(df1, df2)
+행합치기(rbind, bind_rows) : rbind(df1, df2) or bind_rows(df1, df2)
+빈도수 구하기(table) : table(변수)
+정렬하기(sort) : 내림차순 sort(변수), 오름차순 sort(변수, decreasing = TRUE)
+열이름(names, colnames) : names(변수)
+최대, 최소위치 찾기(which.max, which.min) : which.max(변수), which.min(변수)
+```
+
+<br/>
+
+[3. 연산 기호]{style="color:red;"}
+
+```         
+"
+* (곱하기) : x*2
+/ (나누기) : x/2
+%/% (나눗셈의 몫) : 16%/%3 = 5
+%% (나눗셈의 나머지) : 16%/%3 = 1
+== (일치, True or False) : 3==5, False
+!= (불일치) : 3!=5, True
+& (and) : x > 2 & x < 10
+| (or) : x < 2 | x > 10
+"
+```
+
+<br/>
+
+[4. dplyr 전처리 함수]{style="color:red;"}
+
+\[참고 자료\]<https://rstudio.github.io/cheatsheets/html/data-transformation.html>
+
+```         
+%>% ,|> (파이프라인, 왼쪽 데이터프레임을 오른쪽 함수에 넣어라) : df %>% head()
+
+filter (조건에 맞는 행 추출) : df %>% filter(컬럼명 == “a”)
+
+select(특정열 선택) : df %>% select(열번호) / df[, 열번호]
+
+slice(특정행 선택) : df %>% slice(행번호) / df[행번호, ]
+mutate(특정열 추가) : df %>% mutate(새로운 열이름 = )
+rename(열이름 바꾸기) : df %>% rename(새로운 열이름 = 이전 열이름)
+arrange(정렬하기) : 오름차순 : df %>% arrange(열이름), 내림차순 : df %>% arrange(desc(열이름))
+
+group_by(특정열 그룹화), summarise(통계치 계산) :
+
+df %>% group_by(열이름) %>% summarise(평균=mean(열이름))
+열합치기(inner_join, full_join, left_join, right_join) : inner_join(df1, df2, by=“name”)
+
+na가 있는 행 제거하기(na.omit) : na.omit(df)
+
+na가 있는 열에서 na 는 제거하고 계산하기 (na.rm=T) : mean(df, na.rm=T)
+```
+
+<br/> <br/>
+
+## 3. tidytext 패키지
+
+숫자가 아닌 문자를 분석하려면 문장으로 이루어진 데이터를 하나의 열로 만들되, 띄어쓰기 단위로 쪼개서(토큰화 하다) 데이터화해야 한다. tibble 이라는 데이터 포멧으로 만듦.
+
+```{r}
+text_v <- c("배우며 제때에 실행하면 진실로 즐겁지 않겠는가?
+            벗이 먼 곳에서부터 온다면 참으로 즐겁지 않겠는가?
+            남이 알아주지 않아도 성내지 않는다면 참으로 군자답지 않겠는가?")
+text_v
+
+```
+
+```{r}
+
+library(tidyverse)
+library(tidytext)
+
+
+text_df <- tibble(text = text_v)
+
+text_df %>% unnest_tokens(output = word, input = text)
+```
+
+만약 하나의 단어가 아닌 두개 단어로 묶고 싶다면?
+
+```{r}
+text_df %>% unnest_tokens(output = word, input = text, 
+                          token = "ngrams", n = 2 )
+```
+
+자주 나오는 단어의 빈도수를 세어보자.
+
+```{r}
+text_tk <- text_df %>% unnest_tokens(output = word, input = text)
+text_tk %>% 
+  count(word, sort = TRUE)
+```
+
+이걸 시각화해보자.
+
+```{r}
+text_tk %>% 
+  count(word, sort = TRUE) %>% 
+  filter(n > 1) %>% 
+  mutate(word = reorder(word, n)) %>% 
+  ggplot(aes(word, n)) +
+  geom_col() +
+  coord_flip()
+```
+
+```{r}
+##연습
+
+df <- tibble::tribble(
+                          ~ text,
+                            "13인의.아해가.도로로.질주하오.",
+                           "(길은 막다른 골목이 적당하오.)",
+                            "제1의 아해가 무섭다고 그리오.",
+                            "제2의 아해도 무섭다고 그리오.",
+                            "제3의 아해도 무섭다고 그리오.",
+                            "제4의 아해도 무섭다고 그리오.",
+                            "제5의 아해도 무섭다고 그리오.",
+                            "제6의 아해도 무섭다고 그리오.",
+                            "제7의 아해도 무섭다고 그리오.",
+                            "제8의 아해도 무섭다고 그리오.",
+                            "제9의 아해도 무섭다고 그리오.",
+                           "제10의 아해도 무섭다고 그리오.",
+                           "제11의 아해가 무섭다고 그리오.",
+                           "제12의 아해도 무섭다고 그리오.",
+                           "제13의 아해도 무섭다고 그리오.",
+        "13인의 아해는 무서운 아해와 무서워하는 아해와 그렇게뿐이 모였소.",
+                       "(다른 사정은 없는 것이 차라리 나았소)",
+                     "그중에 1인의 아해가 무서운 아해라도 좋소.",
+                     "그중에 2인의 아해가 무서운 아해라도 좋소.",
+                   "그중에 2인의 아해가 무서워하는 아해라도 좋소.",
+                   "그중에 1인의 아해가 무서워하는 아해라도 좋소.",
+                          "(길은 뚫린 골목이라도 적당하오.)",
+                  "13인의 아해가 도로로 질주하지 아니하여도 좋소."
+        )
+
+df |>   unnest_tokens(output = word, input = text) |> 
+   count(word, sort = TRUE) |> 
+    filter(n > 1) %>% 
+  mutate(word = reorder(word, n)) %>% 
+  ggplot(aes(word, n)) +
+  geom_col() +
+  coord_flip()
+
+```
+
+## 4. 데이터 불러와서 빈도분석하기
+
+### epub 파일 불러오기
+
+\[URL\]<https://www.dropbox.com/s/ug3pi74dnxb66wj/jikji.epub?dl=1>
+
+수학방에서 직지프로젝트로 한글소설 93편을 모아 전자서적으로 만든 파일이란 것을 알수 있다. 텍스트데이터는 data열에 리스트로 저장돼 있다. 리스트 구조의 첫번째 요소이므로 \[\[ \]\]를 이용해 부분선택할 수 있다.
+
+```{r}
+library(epubr)
+
+jikji_df <- epub("./data/jikji.epub")
+jikji_df %>% str()
+jikji_df %>% glimpse()
+jikji_df$data[[1]] |> glimpse()
+
+df <- jikji_df$data[[1]]
+```
+
+첫번째 소설은 나도향의 “17월 50전”이다. 이 소설에서 사용한 단어의 빈도를 분석해 시각화해보자.
+
+```{r}
+library(tidytext)
+library(ggplot2)
+tibble(text = df$text[1]) %>% 
+        unnest_tokens(output = word, input = text) %>% 
+        count(word, sort = T) %>% 
+        filter(n >=20) %>% 
+        mutate(word = reorder(word, n)) %>% 
+        ggplot() + geom_col(aes(word, n)) +
+        coord_flip()
+```
+
+### url로 text 파일 불러오기
+
+프로젝트 구텐베르크에서 일반텍스트파일로 저장된 멜빌의 <모비딕>을 불러오자. 일반텍스트 파일은 read_lines()함수를 이용한다.
+
+\[URL\]<https://www.gutenberg.org/files/2701/2701-0.txt>
+
+```{r}
+moby_url <- 'https://www.gutenberg.org/files/2701/2701-0.txt'
+moby_v <- read_lines(moby_url)
+moby_v %>% glimpse()
+moby_v %>% head(3)
+moby_v %>% tail(3)
+```
+
+```{r}
+moby_scan_n <- scan(moby_url, what = "character", sep= "\n")
+moby_scan_n %>% as.tibble() |> 
+        unnest_tokens(output = word, input = value) %>% 
+        count(word, sort = T) %>% 
+        filter(n >=1000) %>% 
+        mutate(word = reorder(word, n)) %>% 
+        ggplot() + geom_col(aes(word, n)) +
+        coord_flip()
+```
+
+### html 파일 불러오기
+
+\[url\]<https://www.gutenberg.org/files/2701/2701-h/2701-h.htm>
+
+```{r}
+library(rvest)
+moby_url_h <- 'https://www.gutenberg.org/files/2701/2701-h/2701-h.htm'
+
+moby_html <- read_html(moby_url_h)
+moby_html
+
+```
+
+소설 내용 추출하기 (body)
+
+```{r}
+#moby_html %>% html_node("body") %>% html_text() |> head()
+```
+
+```{r}
+```
+
+## 5 문자열 정제하기
+
+### 문자열함수 (stringr)
+
+**1 탐지와 찾기(detect & locate)**
+
+str_detect() 문자열에서 패턴의 일치여부를 찾아 논리값(TRUE FALSE)으로 산출한다. str_which() 문자열에서 패턴의 인덱스를 찾아 숫자형으로 산출한다. str_count() 문자열에서 패턴과 일치하는 문자의 개수 계산 str_locate() str_locate_all() 문자열에서 패턴의 위치를 찾아 숫자형으로 산출한다. 여기서 찾은 정수를 str_sub()를 이용해 해당 단어를 추출할 수 있다. str_locate()와 str_sub()함수를 결합해 사용하기 보다 str_extract()함수를 이용하는 것이 더 편리하다.
+
+**2 부분선택, 추출, 일치(subset, extract & match)**
+
+str_sub() 문자벡터에서 문자열을 추출한다. str_subset() 문자열에서 패턴을 찾아 해당 패턴이 포함된 요소를 산출한다. str_extract() str_extract_all() 문자열에서 일치하는 패턴을 찾아 벡터로 산출한다. str_match() str_match_all() 문자열에서 일치하는 패턴을 찾아 행렬로 산출한다.
+
+**3 문자열 변환(Mutate Strings)** str_replace() str_replace_all() 문자열에서 패턴을 찾아 지정된 패턴으로 치환한다. str_remove() str_remove_all() 문자열에서 패턴을 찾아 제거한다.
+
+**4 결합과 분리(Join and Split)** str_c() 복수의 문자열을 하나의 문자열로 결합 str_split() 문자열에서 패턴을 찾아 분리. 리스트 구조로 산출한다. str_split_fixed() 문자열에서 패턴을 찾아 분리. 행렬 구조로 산출한다.
+
+**5 공백문자(Whitespace)** str_squish() 문자열에서 모든 공백을 단일 스페이스 공백으로 치환. str_trim() 문자열에서 좌우 공백을 단일 스페이스 공백으로 치환.
+
+**6 대문자, 소만자로 바꾸기** str_to_lower() 문자열을 모두 소문자로 변환 str_to_upper() 문자열을 모두 대문자로 변환 str_to_title() 문자열에서 각 단어 첫 글자를 대문자로 변환 str_to_sentence() 문자열에서 각 문장 첫 글자를 대문자로 변화 str_order() 문자벡터에서 순서 인덱스를 숫자형으로 산출. str_sort() 문자벡터를 순서대로 정렬
+
+**7 기타 도우미(Other helpers)** str_length() 문자열의 길이 계산해 산출. 즉, 문자열에 있는 문자의 개수 계산 str_view() str_view_all() 정규표현식과 일치하는 결과를 HTML로 렌더링해 산출 str_conv() 문자열의 인코딩 설정 str_wrap() 너비(width) 등을 정해 잘 포맷된 문단으로 문자열 포장
+
+```{r}
+
+library(tidyverse)
+library(stringr)
+
+
+
+string1 <- "문자열이다"
+string2 <- '문자열 내에 "인용문"이 포함된 경우, 나는 작은 따옴표를 사용한다'
+
+double_quote <- "\"" # or '"'
+single_quote <- '\'' # or "'"
+
+backslash <- "\\"
+
+x <- c(single_quote, double_quote, backslash)
+x
+
+str_view(x)
+
+x <- c("first string", "second string", "third string")
+x
+
+```
+
+### 문자열 합치기
+
+```{r}
+str_c("x", "y")
+#> [1] "xy"
+str_c("x", "y", "z")
+#> [1] "xyz"
+str_c("Hello ", c("John", "Susan"))
+#> [1] "Hello John"  "Hello Susan"
+```
+
+### 문자열 데이터 프레임
+
+```{r}
+df <- tibble(name = c("Timothy", "Dewey", "Mable", NA))
+df %>% mutate(greeting = str_c("Hi ", name, "!"))
+#> # A tibble: 4 × 2
+#>   name    greeting   
+#>   <chr>   <chr>      
+#> 1 Timothy Hi Timothy!
+#> 2 Dewey   Hi Dewey!  
+#> 3 Mable   Hi Mable!  
+#> 4 <NA>    <NA>
+```
+
+### 결측치
+
+```{r}
+df %>% mutate(
+  greeting1 = str_c("Hi ", coalesce(name, "you"), "!"),
+  greeting2 = coalesce(str_c("Hi ", name, "!"), "Hi!")
+)
+#> # A tibble: 4 × 3
+#>   name    greeting1   greeting2  
+#>   <chr>   <chr>       <chr>      
+#> 1 Timothy Hi Timothy! Hi Timothy!
+#> 2 Dewey   Hi Dewey!   Hi Dewey!  
+#> 3 Mable   Hi Mable!   Hi Mable!  
+#> 4 <NA>    Hi you!     Hi!
+```
+
+### 간단히 문자열 합치기
+
+```{r}
+df %>% mutate(greeting = str_glue("Hi {name}!"))
+```
+
+### groub_by, summarise 를 사용
+
+```{r}
+str_flatten(c("x", "y", "z"))
+#> [1] "xyz"
+str_flatten(c("x", "y", "z"), ", ")
+#> [1] "x, y, z"
+str_flatten(c("x", "y", "z"), ", ", last = ", and ")
+
+
+df <- tribble(
+  ~ name, ~ fruit,
+  "Carmen", "banana",
+  "Carmen", "apple",
+  "Marvin", "nectarine",
+  "Terence", "cantaloupe",
+  "Terence", "papaya",
+  "Terence", "madarine"
+)
+
+df %>%
+  group_by(name) %>% 
+  summarize(fruits = str_flatten(fruit, ", "))
+
+```
+
+### 문자열 찾기
+
+```{r}
+x <- c("apple", "banana", "pear")
+str_detect(x, "e")
+#> [1]  TRUE FALSE  TRUE
+str_detect(x, "b")
+#> [1] FALSE  TRUE FALSE
+str_detect(x, "x")
+#> [1] FALSE FALSE FALSE
+
+library(babynames)
+head(babynames)
+babynames %>% filter(str_detect(name, "x"))
+#> # A tibble: 16,317 × 5
+#>    year sex   name          n      prop
+#>   <dbl> <chr> <chr>     <int>     <dbl>
+#> 1  1880 F     Roxie        62 0.000635 
+#> 2  1880 F     Dixie        15 0.000154 
+#> 3  1880 F     Roxanna       9 0.0000922
+#> 4  1880 F     Texas         5 0.0000512
+#> 5  1880 M     Alexander   211 0.00178  
+#> 6  1880 M     Alex        147 0.00124  
+#> # … with 16,311 more rows
+```
+
+연도별로 이름에 x가 들어간 사람들의 확률을 뽑아서 그래프로 그려라
+
+```{r}
+babynames %>% 
+  group_by(year) %>% 
+  summarise(prop_x = mean(str_detect(name, "x"))) %>% 
+  ggplot(aes(year, prop_x)) + 
+  geom_line()
+```
+
+### 매칭 문자 세기
+
+```{r}
+x <- c("apple", "banana", "pear")
+str_count(x, "p")
+
+```
+
+```{r}
+babynames %>% 
+  count(name) %>% 
+  mutate(
+    vowels = str_count(name, "[aeiou]"), #소문자 모음 수 세기
+    consonants = str_count(name, "[^aeiou]") #소문자 모음이 아닌 수 세기
+  )
+```
+
+### 치환하기
+
+```{r}
+x <- c("apple", "pear", "banana")
+str_replace_all(x, "[aeiou]", "-")
+#> [1] "-ppl-"  "p--r"   "b-n-n-"
+#> 
+x <- c("1 house", "1 person has 2 cars", "3 people")
+str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
+#> [1] "one house"               "one person has two cars"
+#> [3] "three people"
+#> 
+##한글만 남기기
+x2 <- c("가아아**니다아", "1234나가아***")
+x2 |> str_replace_all("[^가-힣]", " ") 
+
+```
+
+### 대문자로 바꾸기
+
+```{r}
+str_to_upper(c("i", "ı"))
+#> [1] "I" "I"
+
+```
+
+### 문자열 비교 (같은지?)
+
+```{r}
+str_equal("i", "I", ignore_case = TRUE) #대소문자 무시
+#> [1] TRUE
+str_equal("i", "I", ignore_case = TRUE, locale = "tr") #대소문자 고려
+#> [1] FALSE
+```
+
+### 문자열 정렬
+
+```{r}
+str_sort(c("a", "c", "ch", "h", "z"))
+
+```
+
+### 문자열 길이
+
+```{r}
+str_length(c("a", "R for data science", NA))
+
+str_length(c("가", "강", "갉", "강산"))
+
+```
+
+미국 아기이름의 길이의 분포를 찾고, filter() 로 가장 긴 이름을 찾아라
+
+```{r}
+babynames %>%
+  count(length = str_length(name), wt = n)
+#> # A tibble: 14 × 2
+#>   length        n
+#>    <int>    <int>
+#> 1      2   338150
+#> 2      3  8589596
+#> 3      4 48506739
+#> 4      5 87011607
+#> 5      6 90749404
+#> 6      7 72120767
+#> # … with 8 more rows
+
+babynames %>% 
+  filter(str_length(name) == 15) %>% 
+  count(name, wt = n, sort = TRUE)
+#> # A tibble: 34 × 2
+#>   name                n
+#>   <chr>           <int>
+#> 1 Franciscojavier   123
+#> 2 Christopherjohn   118
+#> 3 Johnchristopher   118
+#> 4 Christopherjame   108
+#> 5 Christophermich    52
+#> 6 Ryanchristopher    45
+#> # … with 28 more rows
+```
+
+### 문자열 자르기
+
+```{r}
+x <- c("Apple", "Banana", "Pear")
+str_sub(x, 1, 3)
+#> [1] "App" "Ban" "Pea"
+```
+
+```{r}
+str_sub(x, -3, -1)
+#> [1] "ple" "ana" "ear"
+```
+
+```{r}
+str_sub("a", 1, 5)
+#> [1] "a"
+
+```
+
+미국 이름의 첫글자와 마지막 글자를 찾아라
+
+```{r}
+babynames %>% 
+  mutate(
+    first = str_sub(name, 1, 1),
+    last = str_sub(name, -1, -1)
+  )
+#> # A tibble: 1,924,665 × 7
+#>    year sex   name          n   prop first last 
+#>   <dbl> <chr> <chr>     <int>  <dbl> <chr> <chr>
+#> 1  1880 F     Mary       7065 0.0724 M     y    
+#> 2  1880 F     Anna       2604 0.0267 A     a    
+#> 3  1880 F     Emma       2003 0.0205 E     a    
+#> 4  1880 F     Elizabeth  1939 0.0199 E     h    
+#> 5  1880 F     Minnie     1746 0.0179 M     e    
+#> 6  1880 F     Margaret   1578 0.0162 M     t    
+#> # … with 1,924,659 more rows
+```
+
+### 문자열 줄임(... 또는 줄바꿈)
+
+```{r}
+x <- "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+str_trunc(x, 30)
+#> [1] "Lorem ipsum dolor sit amet,..."
+str_view(str_wrap(x, 30))
+```
+
+### 문자열 분리
+
+```{r}
+animal <- str_c('pig', '/', 'dog', '/', 'cat')
+
+animal
+
+str_split(animal, '/')
+```
+
+### 공백문자 제거
+
+```{r}
+str_trim(' pig dog cat ')
+str_trim(' pig dog cat ', side = 'left')
+str_trim(' pig dog cat ', side = 'right')
+
+#연속 공백을 지우고 하나의 공백만 남겨둠
+str_squish(' pig    dog cat ')
+```
+
+### 정규식
+
+"a." 는 a 가 있고 임의의 문자가 다음에 꼭 있어야 함<br/> "ab?" 는 a 또는 ab 포함되어 있으면 찾음 <br/> "ab+" 는 ab가 포함되어 있으면 찾음<br/> "ab\*" 는 a 또는 ab가 포함되어 있으면 찾음<br/>
+
+```{r}
+str_view_all(c("a", "ab", "ae", "bd", "ea", "eab"), "a.")
+str_view_all(c("a", "ab", "abb"), "ab?")
+str_view_all(c("a", "ab", "ae", "abb", "bd", "ea", "eab"), "ab+")
+str_view_all(c("a", "ab", "abb"), "ab+")
+str_view_all(c("a", "ab", "abb"), "ab*")
+
+
+```
+
+```{r}
+str_detect(c("a", "ab", "ae", "bd", "ea", "eab"), "ab*")
+```
+
+```{r}
+names <- c("Hadley", "Mine", "Garrett")
+str_view_all(names, "[aeiou]") #모음인 문자
+str_count(names, "[aeiou]")
+str_view_all(names, "[^aeiou]") #모음이 아닌 문자
+str_count(names, "[^aeiou]") 
+```
+
+### 특수문자 제외
+
+abcd12345-!\@#%. <br/> 1) abc를 찾아라 <br/> 2) 알파벳 소문자를 찾아라 <br/> 3) 알파벳 소문자와 숫자를 제외하고 찾아라 <br/> 4) 숫자(\d), 숫자가 아닌것(\D) 5) 스페이스, tab 인것 (\s), 아닌것 (\S) 6) 문자, 숫자 인것 (\w), 아닌것 (\W)
+
+```{r}
+str_view_all("abcd12345-!@#%.", c("[abc]", "[a-z]", "[^a-z0-9]"))
+str_view_all("abcd12345!@#%. ", "\\d+")
+str_view_all("abcd12345!@#%. ", "\\D+")
+str_view_all("abcd12345!@#%. ", "\\w+")
+str_view_all("abcd12345!@#%. ", "\\s+")
+
+```
+
+```{r}
+x <- c("summary(x)", "summarise(df)", "rowsum(x)", "sum(x)")
+str_view(x, "sum")
+str_view_all(x, "\\bsum\\b")
+```
+
+```{r}
+head(words)
+str_view(head(words))
+
+head(sentences)
+str_view(head(sentences))
+```
+
+The로 시작하는 문자을 모두 불러와라
+
+```{r}
+str_view(sentences, "^The", match = TRUE) |> head()
+```
+
+대명사로 시작하는 모든 문장을 불러오는 것은 어떻게 할까요?
+
+```{r}
+str_view(sentences, "^(She|He|It|They)\\b", match = TRUE)|> head()
+```
+
+```{r}
+pos <- c("He is a boy", "She had a good time")
+neg <- c("Shells come from the sea", "Hadley said 'It's a great day'")
+pattern <- "^(She|He|It|They)\\b"
+str_detect(pos, pattern)
+#> [1] TRUE TRUE
+str_detect(neg, pattern)
+#> [1] FALSE FALSE
+```
+
+자음만 포함된 단어를 words 에서 찾아라
+
+```{r}
+str_view(words, "^[^aeiou]+$", match = TRUE)
+```
+
+모음을 포함하지 않는 단어를 words에서 찾아라
+
+```{r}
+words[!str_detect(words, "[aeiou]")]
+
+```
+
+a 와 b가 모두 포함한 단어를 words에서 찾아라
+
+```{r}
+words[str_detect(words, "a.*b|b.*a")]
+```
+
+```{r}
+words[str_detect(words, "a") & str_detect(words, "b")]
+```
+
+모든 모음 (a, e, i, o, u)를 포함한 단어를 찾아라
+
+```{r}
+words[str_detect(words, "a.*e.*i.*o.*u")]
+words[str_detect(words, "u.*o.*i.*e.*a")]
+
+words[
+  str_detect(words, "a") &
+  str_detect(words, "e") &
+  str_detect(words, "i") &
+  str_detect(words, "o") &
+  str_detect(words, "u")
+]
+```
+
+red, green, blue가 포함된 문장을 sentences에서 찾아라
+
+```{r}
+str_view(sentences, "\\b(red|green|blue)\\b", match = TRUE)
+```
+
+```{r}
+rgb <- c("red", "green", "blue")
+str_c("\\b(", str_flatten(rgb, "|"), ")\\b")
+colors()[1:50]
+cols <- colors()
+cols <- cols[!str_detect(cols, "\\d")]
+cols
+pattern <- str_c("\\b(", str_flatten(cols, "|"), ")\\b")
+str_view(sentences, pattern, match = TRUE)
+```
+
+### 두번째와 세번째 단어를 바꾸어라.
+
+```{r}
+sentences %>% head()
+sentences %>% 
+  str_replace("(\\w+) (\\w+) (\\w+)", "\\1 \\3 \\2") %>% 
+  head(5)
+```
+
+## 6 워드클라우드 만들기
+
+문제인 대통령 연설문 가져오기
+
+```{r}
+
+df <- read.table("D:/r/data/문재인대통령취임연설문.txt", header = F, fileEncoding = "CP949", encoding = "UTF-8", fill=T,  na = "-", sep = "\t", row.names=NULL)
+
+head(df)
+
+```
+
+워드클라우드 만들기
+
+```{r}
+
+word <- strsplit(df$V1, " ")
+words<-unlist(word)
+tab1<-table(words)
+tab2<-sort(tab1, decreasing = T)
+head(tab2)
+tab3<-tab2[2:201]
+
+library(RColorBrewer)
+library(wordcloud)
+pal<-brewer.pal(8, "Accent")
+
+wordcloud(names(tab3), freq=tab3, min.freq=1, scale=c(7, 0.1) ,colors=pal, random.order = F, rot.per=0.1)
+
+
+
+wordcloud(names(tab3), freq=tab3, min.freq=2, scale=c(7, 0.1) ,colors=brewer.pal(8, "Dark2"), random.order = F, rot.per=0.35)
+
+```
+
+```{r}
+library(wordcloud2)
+df2 <- as.data.frame(tab3)
+head(df2)
+wordcloud2(df2, size=1.3, color='random-dark')
+
+wordcloud2(df2, size = 0.7, shape = 'pentagon')
+
+
+```
+
+```{r}
+
+
+#install.packages("ggwordcloud")
+library(ggwordcloud)
+
+
+ggplot(df2, aes(label = words, size = Freq)) +
+ geom_text_wordcloud(seed = 1234) +
+ scale_radius(limits = c(3, NA),     # 최소, 최대 단어 빈도
+              range = c(3, 30))  
+
+ggplot(df2,
+       aes(label = words,
+           size = Freq,
+           col = Freq)) +                     # 빈도에 따라 색깔 표현
+ geom_text_wordcloud(seed = 1234) +
+ scale_radius(limits = c(3, NA),
+              range = c(3, 30)) +
+ scale_color_gradient(low = "#66aaf2",     # 최소 빈도 색깔
+                      high = "#004EA1") +  # 최고 빈도 색깔
+ theme_minimal()    
+
+
+
+ggplot(df2,
+       aes(label = words,
+           size = Freq,
+           col = as.factor(Freq))) +                     # 빈도에 따라 색깔 표현
+ geom_text_wordcloud(seed = 1234) +
+ scale_radius(limits = c(3, NA),
+              range = c(3, 30)) +
+ theme_minimal() 
+```
+
+### 한글 폰트 바꾸기
+
+```{r}
+library(showtext)
+#font_add_google(name = "Nanum Gothic", family = "nanumgothic")
+showtext_auto()
+
+#library(extrafont)
+
+# font_import(paths=NULL, recursive = TRUE, prompt=TRUE, pattern=NULL)
+
+df2 |> ggplot(aes(label = words,
+           size = Freq,
+           col = Freq)) +
+  geom_text_wordcloud(seed = 1234,
+                      family = "nanumgothic") +  # 폰트 적용
+  scale_radius(limits = c(3, NA),
+               range = c(3, 30)) +
+  scale_color_gradient(low = "#66aaf2",
+                       high = "#004EA1") +
+  theme_minimal()
+```
+
+```{r}
+font_add_google(name = "Black Han Sans", family = "blackhansans")
+showtext_auto()
+
+
+df2 |> ggplot(aes(label = words,
+           size = Freq,
+           col = Freq)) +
+  geom_text_wordcloud(seed = 1234,
+                      family = "nanumgothic") +  # 폰트 적용
+  scale_radius(limits = c(3, NA),
+               range = c(3, 30)) +
+  scale_color_gradient(low = "#66aaf2",
+                       high = "#004EA1") +
+  theme_minimal()
+```
+
+```{r}
+df2 |> 
+  
+  filter(Freq>5) |> 
+  ggplot(aes(x=words, y=Freq, fill = Freq))+
+  geom_col()
+```
+
+## 7. 형태소 분석 (tidytext)
+
+\[참고\]<https://r2bit.com/bitNLP/articles/morphology.html>
+
+한글 문장 토큰화 하기
+
+```{r}
+library(tidytext)
+
+text <- tibble(value = "대한민국은 민주공화국이다. 대한민국의 주권은 국민에게 있고, 모든 권력은 국민으로부터 나온다.")
+
+text %>%
+  unnest_tokens(input = value,        # 토큰화할 텍스트
+                output = word,        # 토큰을 담을 변수명
+                token = "sentences")  # 문장 기준
+
+text %>%
+  unnest_tokens(input = value,        # 토큰화할 텍스트
+                output = word,        # 토큰을 담을 변수명
+                token = "words")  # 띄어쓰기 기준
+
+text %>%
+  unnest_tokens(input = value,        # 토큰화할 텍스트
+                output = word,        # 토큰을 담을 변수명
+                token = "characters")  # 글자 기준
+```
+
+단어수 세기
+
+```{r}
+
+word_space <- text %>%
+  unnest_tokens(input = value,
+                output = word,
+                token = "words")
+word_space  %>%
+ count(word, sort = T)
+
+## 두글자 이상만 
+word_space %>%
+ filter(str_count(word) > 1) |> 
+ count(word, sort = T) 
+```
+
+```{r}
+library(RcppMeCab)
+
+test <- c("한글 테스트 입니다.")
+
+test %>% pos()
+
+test %>% 
+  pos(join = F)
+
+test_v <- enc2utf8(test)
+
+test_v %>% pos(format = "data.frame") |> filter(pos == "NNG")
+
+
+
+library(tidytext)
+
+
+tibble(text = df$V1) %>% 
+  unnest_tokens(output = word, input = text,
+                token = "words") |> 
+    count(word, sort = T)
+
+as.vector(df2$words) |> pos(format = "data.frame") |> 
+  filter(pos == "NNG") |> 
+  count(token) |> 
+  filter(n > 1) |> 
+  ggplot(aes(x=fct_reorder(token, -n), y=n, fill = n))+
+  geom_col()
+
+as.vector(df2$words) |> pos(format = "data.frame") |> 
+  filter(pos == "NNG") |> 
+  count(token) |> 
+  rename(words = token, Freq = n) |> 
+  arrange(-Freq) |> 
+  wordcloud2( size=1.3, color='random-dark')
+
+
+```
+
+## 8. 감정분석
+
+\[참고\]<https://bookdown.org/ahn_media/bookdown-demo/anal1freq.html#%EA%B5%AD%EB%AC%B8-%EA%B0%90%EC%A0%95%EC%82%AC%EC%A0%84>
+
+군산대 소프트웨어융합공학과 Data Intelligence Lab에서 개발한 한국어감정사전이다
+
+```{r}
+# getwd()
+# 
+# url_v <- "https://github.com/park1200656/KnuSentiLex/archive/refs/heads/master.zip"
+# dest_v <- "./data/knusenti.zip"
+# 
+# download.file(url = url_v, 
+#               destfile = dest_v,
+#               mode = "wb")
+# 
+# list.files("data/.")
+# 
+# 
+# unzip("./data/knusenti.zip", exdir = "data")
+# list.files("data/.")
+# 
+# 
+senti_name_v <- list.files("./data/KnuSentiLex-master/.")[9]
+senti_name_v
+```
+
+감정 사전에 점수가 매겨져 있다.
+
+```{r}
+read_lines(str_c("./data/KnuSentiLex-master/", senti_name_v)) %>% head(10)
+
+senti_dic_df <- read_tsv(str_c("./data/KnuSentiLex-master/", senti_name_v), col_names = F)
+
+glimpse(senti_dic_df)
+senti_dic_df[1-5, ]
+
+```
+
+긍정어와 부정어를 살펴보자
+
+```{r}
+#긍정어 
+senti_dic_df %>% 
+  rename(word = X1, sScore = X2) |> 
+  filter(sScore == 2) %>% arrange(word)
+
+#부정어
+senti_dic_df %>% 
+  rename(word = X1, sScore = X2) |> 
+  filter(sScore == -2) %>% arrange
+
+#긍정, 중립, 부정어 단어 수
+senti_dic_df %>% 
+  rename(word = X1, sScore = X2) %>% 
+  mutate(emotion = ifelse(sScore >= 1, "positive", 
+                          ifelse(sScore <= -1, "negative", "neutral"))) %>% 
+  na.omit() |> 
+  count(emotion)
+
+senti_dic_df %>% 
+  rename(word = X1, sScore = X2) %>% 
+  mutate(emotion = ifelse(sScore >= 1, "positive", 
+                          ifelse(sScore <= -1, "negative", "neutral"))) %>% 
+  na.omit() |> 
+  select(sScore) |> 
+  unique()
+
+
+senti_dic_df %>% 
+    rename(word = X1, sScore = X2) |> 
+  filter(!is.na(sScore)) %>% 
+  add_row(word = "갈등", sScore = -1) -> knu_dic_df
+
+```
+
+### 연습문제
+
+문제인 대통령 연설문에 긍정, 부정 단어수 분석
+
+```{r}
+df3 <- as.vector(df2$words) |> pos(format = "data.frame") |> 
+  filter(pos == "NNG") |> 
+  count(token) |> 
+  rename(words = token, Freq = n) |> 
+  arrange(-Freq)
+
+df3
+```
+
+```{r}
+                   
+                   
+df3 |> 
+  rename(word = words) |> 
+  inner_join(knu_dic_df ) |> 
+  arrange(sScore) |> 
+  mutate(sScore = factor(sScore, labels = c(-2, -1, 1, 2))) |> 
+  ggplot(aes(x=fct_reorder(word, -Freq), y=Freq, fill=sScore))+
+  geom_col()+
+  scale_fill_manual(values = c("red", "orange", "green", "blue"))
+
+```
+
+## 9. 네트워크 관계도 분석
+
+\[참고\]<https://kuduz.tistory.com/1195>
+
+### 가수들까리 피처링 관계도 그리기
+
+```{r}
+feat <- read.csv('./data/featuring_2019.csv', encoding = 'utf-8',fileEncoding = "CP949")
+head(feat)
+
+
+library('tidygraph')
+library('ggraph')
+
+feat %>%
+  as_tbl_graph(directed=FALSE) %>%
+  activate(nodes) %>%
+  mutate(eigen = centrality_eigen(),
+         group = group_infomap()) %>%
+  ggraph(layout='nicely') +
+    geom_edge_link(color='gray50', alpha=.2) +
+    geom_node_point(aes(color=factor(group), size=eigen)) +
+    geom_node_text(aes(label=name), size=3, repel=TRUE) +
+    theme_graph() +
+    theme(legend.position='none')
+```
+
+###지하철 노선 그리기
+
+```{r}
+
+subway <- read.csv('./data/subway.csv',encoding = 'utf-8',fileEncoding = "CP949")
+head(subway)
+
+subway %>% as_tbl_graph() %>%
+  ggraph(layout='kk') + 
+  geom_edge_link(aes(color=line)) + 
+  geom_node_point(color='gray25', size=1)
+```
+
+### 역에서 승객 이용수 데이터
+
+```{r}
+metro <- read.csv('./data/metro.csv', encoding = 'utf-8',fileEncoding = "CP949")
+head(metro)
+
+metro %>% as_tbl_graph() %>%
+  mutate(eig=centrality_eigen()) %>%
+  as_tibble %>% 
+  arrange(desc(eig))
+
+metro %>% as_tbl_graph() %>%
+  mutate(eig=centrality_pagerank(weights=total)) %>%
+  as_tibble %>% 
+  arrange(desc(eig))
+```

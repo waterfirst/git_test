@@ -1,0 +1,310 @@
+---
+title: "Data Visualization for Engineers"
+author: "Choi Pro"
+format:
+  html:
+    theme: architect
+    toc_float : true 
+    code-tools:
+      source: true
+      toggle: true
+      caption: none
+    embed-resources: true
+editor: visual
+execute: 
+  enabled: true
+---
+
+## 원그래프
+
+원 그래프는 특정 변수에 범주별 비율을 보여주는 시각화 방법 중 하나이다. 아래는 다이아몬드의 ggplot을 통해 절단품질 비율을 시각화한 결과이다. 최상급 품질과 프리미엄 품질이 절반 이상을 차지하는 것을 알 수 있다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggplot2)
+data=as.data.frame(table(diamonds$cut))
+colnames(data)=c("cut_type", "count")
+ggplot(data=data, aes(x="", y=count, fill=cut_type)) +
+  geom_bar(stat="identity", width=1) + 
+  coord_polar("y",  start=0)
+```
+
+## 도넛 그림
+
+도넛 그림 또한 원 그래프와 마찬가지로 특정 변수에 범주별 비율을 보여주는 시각화 방법 중 하나이다. 도넛 그래프는 여러 변수의 비율을 한번에 보여줄 수 있다는 장점이 있다. 투명도가 나쁠수록 절단품질이 안 좋은 것을 확인할 수 있으며, 투명도가 높을수록 절단품질이 최상급인 자료가 많다는 것을 알 수 있다.
+
+```{r , echo=FALSE ,warning=F  }
+# 핸들링 방법 1
+library(data.table)
+data=diamonds
+data=setDT(data)[ , .(count=.N), by=c("cut", "clarity")]
+data=data[ ,per:=count/sum(count)*100, by=c("cut")]
+
+# 핸들링 방법 2
+library(plyr)
+data=ddply(diamonds, .(cut, clarity), summarise, count=length(cut))
+data=ddply(data, .(cut), mutate, per = count/sum(count)*100)
+
+library(ggplot2)
+#data=as.data.frame(table(diamonds$cut))
+#colnames(data)=c("cut_type", "count")
+ggplot(data=data, 
+aes(x=cut, y=per, fill= clarity, color = cut)) + 
+  geom_col() + 
+  coord_polar("y")
+```
+
+## 막대그래프
+
+막대 그래프는 한 변수 혹은 여러 변수에 대한 빈도나 비율을 보여주는 시각화 방법 중 하나이다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggplot2)
+data=diamonds
+ggplot(data=data, aes(x=cut))+
+  geom_bar()
+
+library(ggplot2)
+data=diamonds
+data=setDT(data)[ ,.(count=.N), by=c("cut")]
+ggplot(data=data, aes(x=cut, y=count, fill=cut)) +
+  geom_bar(stat="identity") +
+  coord_flip()
+
+library(ggplot2)
+data=diamonds
+data=setDT(data)[ , .(count=.N), by=c("cut", "clarity")]
+data=data[ ,per:=count/sum(count)*100, by=c("cut")]
+ggplot(data=data, aes(x=cut, y=per, fill=clarity))+
+  geom_bar(stat="identity", position=position_dodge( ))
+```
+
+## 히스토그램
+
+히스토그램은 어떤 변수에 대한 구간별 빈도수를 시각화하는 방법이다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggplot2)
+data=diamonds
+ggplot(data, aes(x=price, fill="")) + 
+  geom_histogram(bins=30)+
+  scale_fill_viridis_d()
+
+
+library(ggplot2)
+data=diamonds
+data=data[data$color %in% c("J", "D"), ]  ## 특정 COLOR만 사용, Filter 기능
+ggplot(data=data, aes(x=price, fill=color))+
+  geom_histogram(bins=30, alpha=0.6) +
+  scale_fill_viridis_d( )
+```
+
+## 밀도분포 그림
+
+밀도 분포 그림은 히스토그램과 유사하나 커널밀도 추정을 통해 자료의 분포를 시각화하는 방법이다. 커널밀도추정은 커널밀도함수를 활용하여 히스토그램을 부드럽게 선으로 나타내는 방법이다. 큰 다이아몬드들은 대체로 투명도가 좋지 않음을 확인할 수 있다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggplot2)
+data=diamonds
+ggplot(data, aes(x=carat, fill=clarity)) + 
+  geom_density(color="#e9ecef", alpha=0.6)
+```
+
+## 상자그림
+
+3사분위(자료 중 75%에 위치한 자료)와 1사분위(자료 중 25%에 위치한 자료)자료의 차이를 기준으로 특정 범위를 산출하여, 그 범위를 넘어서는 자료를 점으로 표기하여 시각화해주는 방법 중 하나이다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggplot2)
+data=diamonds
+ggplot(data, aes(x=clarity, y=carat, fill=clarity)) + 
+  geom_boxplot(alpha=0.3)+
+  scale_fill_viridis_d( )
+```
+
+## 바이올린 그림
+
+바이올린 그림 또한 상자그림과 마찬가지로 자료의 분포나 치우침, 이상자료, 대칭성 등을 쉽게 볼 수 있으며, 커널밀도추정을 통해 자료의 분포를 좀 더 정확하게 파악할 수 있다는 특징이 있다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggplot2)
+data=diamonds
+ggplot(data, aes(x=clarity, y=carat, fill=clarity)) + 
+  geom_violin(alpha=0.3)+
+  scale_fill_viridis_d( )
+```
+
+## 산점도
+
+산점도란 직교좌표계를 이용해 좌표 상의 점들을 표시함으로써 두 변수 사이의 관계를 직관적으로 시각화하는 방법이다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggplot2)
+data=diamonds
+ggplot(data, aes(x=carat, y=price, color=color)) + 
+  geom_point( )
+```
+
+## 시계열 그림
+
+시계열 그림은 시간의 변화에 따른 변수의 변화를 시각화하는 방법 중 하나이다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggplot2)
+library(forecast)
+library(stringr)
+library(viridis)
+data=AirPassengers
+data=data.frame(
+    values= as.numeric(data),
+    date=as.Date(
+      paste0(trunc(time(AirPassengers)), "-",
+        str_pad(cycle(AirPassengers), 2, pad="0"), "-01")))
+
+ggplot(data=data)+
+geom_line(aes(x=date, y=values, color=""))+
+scale_color_viridis_d( )
+```
+
+## 모자이크 그림
+
+모자이크 그림은 둘 혹은 새개의 범주형 변수들의 빈도를 가시화하는 방법이다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggplot2)
+library(ggmosaic)
+library(data.table)
+data=diamonds
+data=setDT(data)[ ,.(count=.N), by=c("color", "clarity")]
+data=data[ ,per:=count/sum(count)*100, by=c("color")]
+
+ggplot(data)+
+  geom_mosaic(
+    aes(x=product(color), fill=clarity, weight=per))
+```
+
+## 히트맵 그림
+
+히트맵 그림은 색상으로 표현할 수 있는 다양한 정보를 열분포 그림으로 시각화하는 방법이다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggplot2)
+library(raster)
+
+grid = getData("SRTM", lon=126, lat=37)
+grid=aggregate(grid, fact =50)
+data=as.data.frame(grid, xy=T)
+colnames(data)=c("x", "y", "z")
+ggplot(data, aes(x, y, fill= z)) +
+  geom_tile( )
+```
+
+## 상관성 그림
+
+상관성그림은 두 변수 사이의 선형적인 상관성의 정도를 시각화하는 방법이다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggplot2)
+library(ggcorrplot)
+data=data.frame(diamonds)
+corr=cor(data[ , sapply(data, is.numeric)])
+pmat=cor_pmat(data[ , sapply(data, is.numeric)])
+ggcorrplot(
+  corr, method = "circle", hc.order = TRUE, 
+  type="lower", lab=TRUE, p.mat=pmat)
+```
+
+## 워드클라우드
+
+워드클라우드는 자료의 핵심이 되는 단어를 직관적으로 파악할 수 있도록 시각화하는 기법이다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggplot2)
+library(ggwordcloud)
+data("love_words")
+set.seed(42)
+ggplot( love_words, 
+    aes(label = word, size = speakers, color = speakers)) +
+    geom_text_wordcloud_area(
+      aes(angle=45* sample(-2:2, nrow(love_words), 
+        replace = TRUE, prob=c(1, 1, 4, 1, 1))),
+    mask = png::readPNG(system.file("extdata/hearth.png",
+      package="ggwordcloud", mustWork=TRUE)))+
+    scale_size_area(max_size = 40 ) +
+    theme_minimal( ) +
+scale_color_gradient(low = "darkred", high = "red")
+```
+
+## 사회관계망
+
+사회관계망은 점들 사이의 연관성을 직관적으로 파악할 수 있도록 점 사이의 연관성을 선의 굵기로 시각화하는 기법이다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggraph)
+library(tidygraph)
+
+graph<-as_tbl_graph(highschool) %>%
+        mutate(Popularity=centrality_degree(mode = "in" ))
+
+ggraph(graph, layout = "kk") + 
+geom_edge_fan(aes(alpha = stat(index)), show.legend = FALSE)+
+geom_node_point(aes(size = Popularity)) + 
+facet_edges(~ year)
+```
+
+## 퀴버플롯
+
+퀴버플롯은 방향과 크기를 가지는 벡터의 흐름을 직관적으로 시각화하는 방법으로, 풍향/풍속, 유향/유속 등의 자료를 시각화 할 때 주로 활용한다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggraph) 
+library(ggquiver) 
+field = expand.grid( x= seq(0, pi , pi/12), y= seq(0, pi , pi/12)) 
+ggplot(field, aes(x=x, y=y, u=cos(x), v=sin(y))) +   geom_quiver( )
+```
+
+## 바람장미도
+
+바람장미도는 특정 관측지점의 특정 기간동안의 각 방위별 풍향/풍속에 대한 출현 빈도를 방사모양의 그래프로 시각화하는 기법이다.
+
+```{r, echo=FALSE,warning=F  }
+library(clifro) 
+wind_df = data.frame(  
+               wind_speeds = c(rweibull(80, 2, 4), rweibull(20, 3, 9)), 
+                            wind_dirs = c(rnorm(80, 135, 55), rnorm(20, 315, 35)) %%360,  
+                            station = rep(c("Station A", "Station B"), 2), rep(c(40, 10), each=2)) 
+with(wind_df, windrose(wind_speeds, wind_dirs,speed_cut=c(3,6,9,12)))
+
+```
+
+## 2차원 밀도 그림
+
+2차원 밀도그림으로 산점도의 밀도를 색으로 시각화하는 방법이다.
+
+```{r, echo=FALSE,warning=F  }
+library(ggplot2) 
+data=diamonds 
+p = ggplot(data, aes(carat, price)) 
+p + geom_bin2d( )
+```
+
+## 파이썬(회오리 그래프)
+
+회오리 그래프
+
+```{python}
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(
+  subplot_kw = {'projection': 'polar'} 
+)
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+
+
+```
