@@ -78,7 +78,6 @@ R도 모르는데 Quarto는 또 무엇인가?
     -   문자열 정제 (stringr)
 
     -   관계도 분석 (tidygraph, ggraph)
-    
 
 참고사이트 <br/>
 
@@ -113,6 +112,123 @@ R도 모르는데 Quarto는 또 무엇인가?
   });
 </script>
 ```
+### 프로그램 설치
+
+(#1\~5까지 하고, #6,7은 나중에\~\~)
+
+1.  R 설치 : <https://posit.co/download/rstudio-desktop/>
+
+2.  RStudio 설치 <https://posit.co/download/rstudio-desktop/>
+
+3.  Quarto CLI설치 : <https://quarto.org/docs/download/>
+
+4.  Latex 설치 : (Rstudio 터미널창) **\$ quarto install tinytex**
+
+5.  출판용 사이트 가입 : <https://quartopub.com/>
+
+6.  github 가입 : <https://github.com/>
+
+7.  git 설치 : <https://git-scm.com/download/win>
+
+\[Quarto \]<https://quarto.org/docs/presentations/revealjs/>
+
+프로그램을 배울 때, 다운로드, 설치, 환경설정만 하면 50%는 이미 배운것입니다. \^\^
+
+
+### RStudio 설명
+
+![](./images/rstudio_window.png)
+
+```{r}
+
+print("Hello World!!")
+
+```
+
+R은 통계 전문 프로그래 언어이지만 코딩 언어는 나중에 배우고 우리는 문서 작성 Tool 로서 Quarto라는 새로운 세계를 먼저 배울 것입니다.
+
+우선 패키지 하나만 설치하고 갑시다. (tidyverse : 패키지 선물세트)
+
+```{r}
+#install.packages("tidyverse)
+library(tidyverse)
+```
+
+## 2 Markdown 문법 배우기
+
+\[참고문헌 1\] 한국 R 사용자 협회 문서\
+<https://r2bit.com/gpt-quarto/part_markdown.html>
+
+\[참고문헌 2\] Quarto 사이트 <https://quarto.org/docs/authoring/markdown-basics.html>
+
+\[참고문헌 3\] R <https://rchemistblog.com/blog/posts/2023-01-19-quarto-intro/>
+
+따라해보기\~\~ (50분)
+
+각자 주제를 하나 정한 후 그 내용으로 문서를 작성해봅니다. 문서 내용은 AI에게 물어서 작성해봅니다.
+
+1.  Bing chat : <https://www.bing.com/chat?form=CONVRD>
+
+2.  Openai : <https://chatgpt.com/>
+
+3.  클로드3 : <https://claude.ai/>
+
+4.  클로버 X : <https://clova-x.naver.com/welcome>
+
+특별히 AI에게 "마크다운 문서로 작성해줘" 라고 하면 마크다운 문법으로 글, 표를 작성해줍니다.
+
+이미지는 "images" 폴더를 하나 만들어서 그 안에 저장해줍니다.
+
+### 자신의 웹사이트에 문서 올리기
+
+-   File -\> New Project -\> New Directory -\> Quarto Website -\> Directory 이름 적기
+
+-   "index.qmd" 로 저장하기
+
+-   문서가 다 작성되었으면 윗쪽 **Render** 누르면 html 파일이 만들어짐.
+
+-   콘솔창의 터미널로 가기
+
+-   \$ quarto publish quarto-pub
+
+-   Authorize (Y/n)
+
+[참고문헌] <https://quarto.org/docs/publishing/quarto-pub.html>
+
+
+
+### 여러 문서를 하나의 웹사이트에 넣으려면?
+
+- _quarto.yml 파일을 보자
+
+- left 아래 새로운 qmd 파일 추가하자.
+
+![](./images/quarto_publish2.png)
+
+
+````
+project:
+  type: website
+
+website:
+  title: "Quarto_website"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - index2.qmd
+      - about.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+editor: visual
+
+```
+
 ## 2 기초 문법
 
 [1. 데이터 형식]{style="color:red;"}

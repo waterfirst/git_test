@@ -1,0 +1,21 @@
+project:
+  type: website
+
+website:
+  title: "Quarto_website"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+      - index2.qmd
+      
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+editor: visual
+

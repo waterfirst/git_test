@@ -1,0 +1,233 @@
+---
+title: "디지털 글쓰기 수업"
+author: "waterfirst"
+format:
+  html:
+    toc: true
+    embed-resources: true
+    
+editor: visual
+code-fold: true
+execute:
+  message : false
+  warning : false
+  error : false
+  echo : true
+---
+
+## 1 Introduction
+
+이 수업은 코딩을 전혀 모르는 사람들을 대상으로 디지털글쓰기 수업을 위해 만들었습니다.
+
+자신만의 포트폴리오, 레포트, 웹페이지를 만드는 마크다운 방식의 글쓰기를 먼저 배울것입니다.
+
+그리고 그 내용물을 채울 때 필요한 R 언어에 대한 기초를 배우고, 텍스트 분석까지 해보는 것을 목표로 하고 있습니다.
+
+R 언어 간단 소개
+
+두명의 뉴질랜드 통계학자가 만듦 : 로버트 젠틀맨(Robert Gentleman)과 로스 이하카(Ross Ihaka)
+
+해들리 위컴에 의해 빅데이터 툴로 발전함 (대표적 : ggplot, tidyverse) <br/>
+
+![](https://149357281.v2.pressablecdn.com/wp-content/uploads/2017/09/9.28-1.png)
+
+줄리아실기 : 문자분석(tidytext), 머신러닝(tidymodel)
+
+![](https://use-r.kr/fig/julia_silge.jpg)
+
+언어의 특징 : 1부터 시작 (다른 언어들은 0부터 시작)
+
+-   패키지 설치 / 불러오기 : install.packages(“패키지이름”) / library(패키지이름)
+
+### 프로그램 구분
+
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FHzmVo%2FbtqYo0P6SWZ%2FtDiMUtNpC8VETbYmmx7nW1%2Fimg.png)
+
+이 많은 것을 다 배워야 할까? 어렵다.
+
+R에서 프론트엔드를 하려면 어떻게 할까? 즉 눈에 보이는 문서, 웹페이지를 만들려면?
+
+**Quarto**는 **RMarkdown** 기반 **디지털 글쓰기** 양식이다.
+
+R도 모르는데 Quarto는 또 무엇인가?
+
+잘 모르지만 이 강의를 듣게 되면 무엇을 할 수 있는지를 보자.
+
+![](./images/Clipboard01.png)
+
+<https://quarto.org/docs/gallery/>
+
+<https://r2bit.com/bitSlide/dashboard_202404.html#/%EC%BF%BC%ED%86%A0-1>
+
+### **강의 순서**
+
+1.  Markdown 문법 배우기 (1주차)
+
+    <https://quarto.org/docs/authoring/markdown-basics.html>
+
+2.  Documents 를 좀 더 확장해서 배우기 (2주차)
+
+    <https://quarto.org/docs/presentations/revealjs/>
+
+3.  Dashboard 만들기 (3주차)
+
+    <https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/>
+
+4.  텍스트 분석 (4주차)
+
+    -   문자열 정제 (stringr)
+
+    -   관계도 분석 (tidygraph, ggraph)
+
+참고사이트 <br/>
+
+\[문자열함수 : stringr\]<https://bookdown.org/sulgi/r4ds/strings.html>
+
+\[한국문자분석 : bitNLP\]<https://github.com/bit2r/bitNLP>
+
+\[문자분석 : tidytext\]<https://github.com/juliasilge/tidytext> <br/>
+
+\[관계망 분석 : tidygraph\]<https://github.com/thomasp85/tidygraph> <br/>
+
+\[관계망 분석 : ggraph\] <https://github.com/thomasp85/ggraph> <br/>
+
+\[Quarto 문서화 : quarto\]<https://quarto.org/docs/presentations/revealjs/>
+
+------------------------------------------------------------------------
+
+```{=html}
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js""></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+    // onClick function for all plots (img's)
+    $('img:not(.zoomImg)').click(function() {
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+    });
+    // onClick function for zoomImg
+    $('img.zoomImg').click(function() {
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+    });
+  });
+</script>
+```
+### 프로그램 설치
+
+(#1\~5까지 하고, #6,7은 나중에\~\~)
+
+1.  R 설치 : <https://posit.co/download/rstudio-desktop/>
+
+2.  RStudio 설치 <https://posit.co/download/rstudio-desktop/>
+
+3.  Quarto CLI설치 : <https://quarto.org/docs/download/>
+
+4.  Latex 설치 : (Rstudio 터미널창) **\$ quarto install tinytex**
+
+5.  출판용 사이트 가입 : <https://quartopub.com/>
+
+6.  github 가입 : <https://github.com/>
+
+7.  git 설치 : <https://git-scm.com/download/win>
+
+\[Quarto \]<https://quarto.org/docs/presentations/revealjs/>
+
+프로그램을 배울 때, 다운로드, 설치, 환경설정만 하면 50%는 이미 배운것입니다. \^\^
+
+### RStudio 설명
+
+![](./images/rstudio_window.png)
+
+```{r}
+
+print("Hello World!!")
+
+```
+
+R은 통계 전문 프로그래 언어이지만 코딩 언어는 나중에 배우고 우리는 문서 작성 Tool 로서 Quarto라는 새로운 세계를 먼저 배울 것입니다.
+
+우선 패키지 하나만 설치하고 갑시다. (tidyverse : 패키지 선물세트)
+
+```{r}
+#install.packages("tidyverse)
+library(tidyverse)
+```
+
+## 2 Markdown 문법 배우기
+
+\[참고문헌 1\] 한국 R 사용자 협회 문서\
+<https://r2bit.com/gpt-quarto/part_markdown.html>
+
+\[참고문헌 2\] Quarto 사이트 <https://quarto.org/docs/authoring/markdown-basics.html>
+
+\[참고문헌 3\] R <https://rchemistblog.com/blog/posts/2023-01-19-quarto-intro/>
+
+따라해보기\~\~ (50분)
+
+각자 주제를 하나 정한 후 그 내용으로 문서를 작성해봅니다. 문서 내용은 AI에게 물어서 작성해봅니다.
+
+1.  Bing chat : <https://www.bing.com/chat?form=CONVRD>
+
+2.  Openai : <https://chatgpt.com/>
+
+3.  클로드3 : <https://claude.ai/>
+
+4.  클로버 X : <https://clova-x.naver.com/welcome>
+
+특별히 AI에게 "마크다운 문서로 작성해줘" 라고 하면 마크다운 문법으로 글, 표를 작성해줍니다.
+
+이미지는 "images" 폴더를 하나 만들어서 그 안에 저장해줍니다.
+
+### 자신의 웹사이트에 문서 올리기
+
+-   File -\> New Project -\> New Directory -\> Quarto Website -\> Directory 이름 적기
+
+-   "index.qmd" 로 저장하기
+
+-   문서가 다 작성되었으면 윗쪽 **Render** 누르면 html 파일이 만들어짐.
+
+-   폴더창에 "images" 를 만든 후 이미지 저장
+
+-   about.qmd 파일 안에 이미지 넣기
+
+-   콘솔창의 터미널로 가기
+
+-   \$ quarto publish quarto-pub
+
+-   Authorize (Y/n) -> 엔터, 엔터
+
+
+### 여러 문서를 하나의 웹사이트에 넣으려면?
+
+- _quarto.yml 파일을 보자
+
+- left 아래 새로운 qmd 파일 추가하자.
+
+![](./images/quarto_publish2.png)
+
+
+````
+project:
+  type: website
+
+website:
+  title: "Quarto_website"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - index2.qmd
+      - about.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+editor: visual
+
+```
+
+
+[참고문헌] <https://quarto.org/docs/publishing/quarto-pub.html>

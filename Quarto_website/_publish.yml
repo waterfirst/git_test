@@ -1,0 +1,4 @@
+- source: project
+  quarto-pub:
+    - id: 4be3d300-3cac-4438-bf57-ae8efa34227f
+      url: 'https://waterfirst.quarto.pub/quarto_website'

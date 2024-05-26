@@ -1,0 +1,7 @@
+---
+title: "Who am I?"
+---
+
+**문자와 숫자, 둘을 자유롭게 가지고 놀고 싶다**
+
+![](images/profile.jpeg)
