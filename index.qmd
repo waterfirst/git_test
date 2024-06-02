@@ -5,6 +5,9 @@ format:
   html:
     toc: true
     embed-resources: true
+    link-external-icon: true
+    link-external-newwindow: true
+    link-external-filter: '^(?:http:|https:)\/\/www\.quarto\.org\/custom'
     
 editor: visual
 code-fold: true
@@ -13,6 +16,8 @@ execute:
   warning : false
   error : false
   echo : true
+  
+lightbox: true
 ---
 
 ## 1 Introduction
@@ -95,23 +100,6 @@ R도 모르는데 Quarto는 또 무엇인가?
 
 ------------------------------------------------------------------------
 
-```{=html}
-<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js""></script>
-<script type="text/javascript">
-  $(document).ready(function() {
-    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
-    // onClick function for all plots (img's)
-    $('img:not(.zoomImg)').click(function() {
-      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
-      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
-    });
-    // onClick function for zoomImg
-    $('img.zoomImg').click(function() {
-      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
-    });
-  });
-</script>
-```
 ### 프로그램 설치
 
 (#1\~5까지 하고, #6,7은 나중에\~\~)
@@ -194,40 +182,320 @@ library(tidyverse)
 
 -   \$ quarto publish quarto-pub
 
--   Authorize (Y/n) -> 엔터, 엔터
+-   Authorize (Y/n) -\> 엔터, 엔터
+
+## Day2
+
+### 복습
+
+-   Render 후 Viewer 창에서 결과물을 보려면
+
+![](images/error_1.png)
+
+-   지난번 작성한 프로젝트를 열어봅시다. (QuartoPub에 웹페이지로 올린 프로젝트)
+
+-   또하나의 qmd 파일을 추가해봅시다.
+
+    \_quarto.yml 파일을 보자. about 윗쪽에 새로운 qmd 파일을 넣자
+
+![](./images/quarto_yml.png)
+
+-   Render -\> html 파일 확인 -\> QuartoPub에 게시 (Terminal 창 : quarto publish quarto-pub)
+
+## 1. YAML 헤더에 꾸미기 넣기
 
 
-### 여러 문서를 하나의 웹사이트에 넣으려면?
+### 제목을 이미지로 넣기
 
-- _quarto.yml 파일을 보자
+```
+---
+title-block-banner: images/banner.jpeg
+---
+```
 
-- left 아래 새로운 qmd 파일 추가하자.
 
-![](./images/quarto_publish2.png)
+###   목차 위치 바꾸기
 
-
-````
-project:
-  type: website
-
-website:
-  title: "Quarto_website"
-  navbar:
-    left:
-      - href: index.qmd
-        text: Home
-      - index2.qmd
-      - about.qmd
-
+```
+---
 format:
   html:
-    theme: cosmo
-    css: styles.css
     toc: true
+    toc-location: left
+---
+```
+### 목차 아래에 참고할만한 사이트 추가하자
+```
+---
+format:
+  html:
+    other-links:
+      - text: NASA Open Data
+        href: https://data.nasa.gov/
+---
+```
 
-editor: visual
+###  링크 앞에 아이콘을 넣어보자
+
+<https://icons.getbootstrap.com/>
+
+
+```
+---
+format:
+  html:
+    other-links:
+      - text: NASA Open Data
+        href: https://data.nasa.gov/
+    code-links:
+      - text: Data Import Code
+        icon: file-code
+        href: data-import.py
+---
+```
+
+### 외부 링크 옆에 아이콘을 붙이고, 새로운 창으로 열려면 : YAML 헤더에 추가
+
+```
+format:
+  html:
+    link-external-icon: true
+    link-external-newwindow: true
+    link-external-filter: '^(?:http:|https:)\/\/www\.quarto\.org\/custom'
+```
+
+### 이미지를 클릭하면 줌인 되도록 하려면 : YAML 헤더에 추가
+
+```
+lightbox: true
+```
+
+## 2. 문서안에서 꾸미기
+
+
+### 탭 세트
+
+```
+
+::: {.panel-tabset}
+#### 대한민국
+
+``` 
+수도 : 서울
+
+```
+
+#### 중국
+
+``` 
+수도 : 베이징
+
+```
+
+#### 일본
+
+``` 
+수도 : 도쿄
+
+```
 
 ```
 
 
-[참고문헌] <https://quarto.org/docs/publishing/quarto-pub.html>
+
+
+::: {.panel-tabset}
+#### 대한민국
+
+``` 
+수도 : 서울
+
+```
+
+#### 중국
+
+``` 
+수도 : 베이징
+
+```
+
+#### 일본
+
+``` 
+수도 : 도쿄
+
+```
+
+:::
+
+
+### 색깔있는 박스 넣기
+
+[참고]<https://quarto.org/docs/authoring/callouts.html>
+
+- note
+- warning
+- important
+- tip
+- caution
+
+```
+
+::: {.callout-note}
+하늘색 : 간단한 코멘트 넣기 (강조할 때는 단어 앞뒤고 `로 감싸기)
+Note that there are five types of callouts, including:
+`note`, `warning`, `important`, `tip`, and `caution`.
+:::
+
+::: {.callout-tip}
+## Tip with Title
+연두색 : 팁 (팁에 제목 넣기)
+This is an example of a callout with a title.
+:::
+
+::: {.callout-warning}
+## Warning with Title
+노란색 : 주의 
+This is an example of a callout with a title.
+:::
+
+
+::: {.callout-important}
+## Important with Title
+분홍색 : 중요 
+This is an example of a callout with a title.
+:::
+
+
+::: {.callout-caution collapse="true"}
+## Expand To Learn About Collapse
+주황색 : 펼쳐보이기 (팁에 제목 넣기)
+
+This is an example of a 'folded' caution callout that can be expanded by the user. You can use `collapse="true"` to collapse it by default or `collapse="false"` to make a collapsible callout that is expanded by default.
+:::
+
+```
+
+
+
+
+
+::: {.callout-note}
+하늘색 : 간단한 코멘트 넣기 (강조할 때는 단어 앞뒤고 `로 감싸기)
+Note that there are five types of callouts, including:
+`note`, `warning`, `important`, `tip`, and `caution`.
+:::
+
+::: {.callout-tip}
+### Tip with Title
+연두색 : 팁 (팁에 제목 넣기)
+This is an example of a callout with a title.
+:::
+
+::: {.callout-warning}
+### Warning with Title
+노란색 : 주의 
+This is an example of a callout with a title.
+:::
+
+
+::: {.callout-important}
+### Important with Title
+분홍색 : 중요 
+This is an example of a callout with a title.
+:::
+
+
+::: {.callout-caution collapse="true"}
+### Expand To Learn About Collapse
+주황색 : 펼쳐보이기 (팁에 제목 넣기)
+
+This is an example of a 'folded' caution callout that can be expanded by the user. You can use `collapse="true"` to collapse it by default or `collapse="false"` to make a collapsible callout that is expanded by default.
+:::
+
+
+tip box를 언급할 때는 *@tip-"이름"* 으로 부를 수 있다. 
+
+::: {#tip-a .callout-tip}
+### Cross-Referencing a Tip
+
+Add an ID starting with `#tip-` to reference a tip.
+:::
+
+See @tip-a...
+
+
+## 3. pdf 문서 만들기(YAML format 바꾸기)
+
+<https://quarto.org/docs/output-formats/pdf-basics.html>
+
+```
+---
+title: "My document"
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+---
+```
+
+
+## 4. typst 문서(pdf와 비슷) 만들기(YAML format 바꾸기)
+
+<https://quarto.org/docs/output-formats/typst.html>
+
+```
+---
+title: "Hello Typst!"
+format:
+  typst:
+    toc: true
+    section-numbering: 1.1.a
+    columns: 2
+---
+```
+
+
+
+
+## 5. Word 문서 만들기(YAML format 바꾸기)
+
+<https://quarto.org/docs/output-formats/ms-word.html>
+
+```
+---
+title: "My Document"
+format:
+  docx:
+    toc: true
+    number-sections: true
+    highlight-style: github
+---
+```
+
+
+## 6. 웹슬라이드 문서 만들기 (발표형식)
+<https://r2bit.com/gpt-quarto/dw_slideshow.html>
+
+```
+---
+title: "Habits"
+author: "John Doe"
+format: revealjs
+---
+
+## 제목1
+
+- 내용1
+- 내용2
+
+## 제목2
+
+- 내용1
+- 내용2
+
+```
+
+
+- 각자 주제를 정해서 웹슬라이드를 만들고 QuartoPub에 게시해보자 (50분)
