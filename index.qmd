@@ -499,3 +499,28 @@ format: revealjs
 
 
 - 각자 주제를 정해서 웹슬라이드를 만들고 QuartoPub에 게시해보자 (50분)
+
+
+## 7. github에 게시하기
+
+- github 가입하기
+  
+  new repository 만들기
+  page -> main -> save
+
+- git download <https://git-scm.com/>
+
+ 설치 완료 후 Git bash 열고 환경 설정
+  
+ <https://hackmd.io/@oW_dDxdsRoSpl0M64Tfg2g/ByfwpNJ-K>
+ 
+
+- github에 올리기
+ <https://minitistics.tistory.com/27>
+ 
+ 
+File - New Project - Versioin Control - github 레포지토리 주소 넣기
+
+- 환경창에 Git -> commit -> Push 
+
+<끝>
