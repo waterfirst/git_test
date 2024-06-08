@@ -204,19 +204,17 @@ library(tidyverse)
 
 ## 1. YAML 헤더에 꾸미기 넣기
 
-
 ### 제목을 이미지로 넣기
 
-```
+```         
 ---
 title-block-banner: images/banner.jpeg
 ---
 ```
 
+### 목차 위치 바꾸기
 
-###   목차 위치 바꾸기
-
-```
+```         
 ---
 format:
   html:
@@ -224,8 +222,10 @@ format:
     toc-location: left
 ---
 ```
+
 ### 목차 아래에 참고할만한 사이트 추가하자
-```
+
+```         
 ---
 format:
   html:
@@ -235,12 +235,11 @@ format:
 ---
 ```
 
-###  링크 앞에 아이콘을 넣어보자
+### 링크 앞에 아이콘을 넣어보자
 
 <https://icons.getbootstrap.com/>
 
-
-```
+```         
 ---
 format:
   html:
@@ -256,7 +255,7 @@ format:
 
 ### 외부 링크 옆에 아이콘을 붙이고, 새로운 창으로 열려면 : YAML 헤더에 추가
 
-```
+```         
 format:
   html:
     link-external-icon: true
@@ -266,80 +265,70 @@ format:
 
 ### 이미지를 클릭하면 줌인 되도록 하려면 : YAML 헤더에 추가
 
-```
+```         
 lightbox: true
 ```
 
 ## 2. 문서안에서 꾸미기
 
-
 ### 탭 세트
 
-```
+```         
 
 ::: {.panel-tabset}
 #### 대한민국
+```
 
-``` 
 수도 : 서울
 
+```         
+
+#### 중국
+```
+
+수도 : 베이징
+
+```         
+
+#### 일본
+```
+
+수도 : 도쿄
+
+```         
+```
+
+::: panel-tabset
+#### 대한민국
+
+```         
+수도 : 서울
 ```
 
 #### 중국
 
-``` 
+```         
 수도 : 베이징
-
 ```
 
 #### 일본
 
-``` 
+```         
 수도 : 도쿄
-
 ```
-
-```
-
-
-
-
-::: {.panel-tabset}
-#### 대한민국
-
-``` 
-수도 : 서울
-
-```
-
-#### 중국
-
-``` 
-수도 : 베이징
-
-```
-
-#### 일본
-
-``` 
-수도 : 도쿄
-
-```
-
 :::
-
 
 ### 색깔있는 박스 넣기
 
-[참고]<https://quarto.org/docs/authoring/callouts.html>
+\[참고\]<https://quarto.org/docs/authoring/callouts.html>
 
-- note
-- warning
-- important
-- tip
-- caution
+-   note
+-   warning
+-   important
+-   tip
+-   caution
 
-```
+```         
 
 ::: {.callout-note}
 하늘색 : 간단한 코멘트 넣기 (강조할 때는 단어 앞뒤고 `로 감싸기)
@@ -373,48 +362,39 @@ This is an example of a callout with a title.
 
 This is an example of a 'folded' caution callout that can be expanded by the user. You can use `collapse="true"` to collapse it by default or `collapse="false"` to make a collapsible callout that is expanded by default.
 :::
-
 ```
 
-
-
-
-
-::: {.callout-note}
-하늘색 : 간단한 코멘트 넣기 (강조할 때는 단어 앞뒤고 `로 감싸기)
-Note that there are five types of callouts, including:
-`note`, `warning`, `important`, `tip`, and `caution`.
+::: callout-note
+하늘색 : 간단한 코멘트 넣기 (강조할 때는 단어 앞뒤고 `로 감싸기) Note that there are five types of callouts, including:`note`,`warning`,`important`,`tip`, and`caution\`.
 :::
 
-::: {.callout-tip}
+::: callout-tip
 ### Tip with Title
-연두색 : 팁 (팁에 제목 넣기)
-This is an example of a callout with a title.
+
+연두색 : 팁 (팁에 제목 넣기) This is an example of a callout with a title.
 :::
 
-::: {.callout-warning}
+::: callout-warning
 ### Warning with Title
-노란색 : 주의 
-This is an example of a callout with a title.
+
+노란색 : 주의 This is an example of a callout with a title.
 :::
 
-
-::: {.callout-important}
+::: callout-important
 ### Important with Title
-분홍색 : 중요 
-This is an example of a callout with a title.
-:::
 
+분홍색 : 중요 This is an example of a callout with a title.
+:::
 
 ::: {.callout-caution collapse="true"}
 ### Expand To Learn About Collapse
+
 주황색 : 펼쳐보이기 (팁에 제목 넣기)
 
 This is an example of a 'folded' caution callout that can be expanded by the user. You can use `collapse="true"` to collapse it by default or `collapse="false"` to make a collapsible callout that is expanded by default.
 :::
 
-
-tip box를 언급할 때는 *@tip-"이름"* 으로 부를 수 있다. 
+tip box를 언급할 때는 @tip*-"이름"* 으로 부를 수 있다.
 
 ::: {#tip-a .callout-tip}
 ### Cross-Referencing a Tip
@@ -424,12 +404,11 @@ Add an ID starting with `#tip-` to reference a tip.
 
 See @tip-a...
 
-
 ## 3. pdf 문서 만들기(YAML format 바꾸기)
 
 <https://quarto.org/docs/output-formats/pdf-basics.html>
 
-```
+```         
 ---
 title: "My document"
 format:
@@ -440,12 +419,11 @@ format:
 ---
 ```
 
-
 ## 4. typst 문서(pdf와 비슷) 만들기(YAML format 바꾸기)
 
 <https://quarto.org/docs/output-formats/typst.html>
 
-```
+```         
 ---
 title: "Hello Typst!"
 format:
@@ -456,14 +434,11 @@ format:
 ---
 ```
 
-
-
-
 ## 5. Word 문서 만들기(YAML format 바꾸기)
 
 <https://quarto.org/docs/output-formats/ms-word.html>
 
-```
+```         
 ---
 title: "My Document"
 format:
@@ -474,11 +449,11 @@ format:
 ---
 ```
 
-
 ## 6. 웹슬라이드 문서 만들기 (발표형식)
+
 <https://r2bit.com/gpt-quarto/dw_slideshow.html>
 
-```
+```         
 ---
 title: "Habits"
 author: "John Doe"
@@ -494,33 +469,28 @@ format: revealjs
 
 - 내용1
 - 내용2
-
 ```
 
-
-- 각자 주제를 정해서 웹슬라이드를 만들고 QuartoPub에 게시해보자 (50분)
-
+-   각자 주제를 정해서 웹슬라이드를 만들고 QuartoPub에 게시해보자 (50분)
 
 ## 7. github에 게시하기
 
-- github 가입하기
-  
-  new repository 만들기
-  page -> main -> save
+-   github 가입하기
 
-- git download <https://git-scm.com/>
+    new repository 만들기 page -\> main -\> save
 
- 설치 완료 후 Git bash 열고 환경 설정
-  
- <https://hackmd.io/@oW_dDxdsRoSpl0M64Tfg2g/ByfwpNJ-K>
- 
+-   git download <https://git-scm.com/>
 
-- github에 올리기
- <https://minitistics.tistory.com/27>
- 
- 
+설치 완료 후 Git bash 열고 환경 설정
+
+[https://hackmd.io/\@oW_dDxdsRoSpl0M64Tfg2g/ByfwpNJ-K](https://hackmd.io/@oW_dDxdsRoSpl0M64Tfg2g/ByfwpNJ-K){.uri}
+
+-   github에 올리기 <https://minitistics.tistory.com/27>
+
 File - New Project - Versioin Control - github 레포지토리 주소 넣기
 
-- 환경창에 Git -> commit -> Push 
+-   환경창에 Git -\> commit -\> Push
+
+![](images/github_연동.jpg)
 
 <끝>
