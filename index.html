@@ -583,8 +583,7 @@ Card 2-1
 ### Column {width=60%}
 :::{.card}
 Card 2-2
-:::
-</code></pre>
+:::</code></pre>
 </section>
 <section id="tabset-넣기" class="level3">
 <h3 class="anchored" data-anchor-id="tabset-넣기">3. TABSET 넣기</h3>
@@ -618,9 +617,7 @@ Card 2-3
 
 :::{.card}
 Card 3-1
-:::
-
-</code></pre>
+:::</code></pre>
 </section>
 <section id="헤더에-링크-넣기" class="level3">
 <h3 class="anchored" data-anchor-id="헤더에-링크-넣기">4. 헤더에 링크 넣기</h3>
@@ -680,9 +677,111 @@ This dashboard displays an overview of the thesis guidance process.:
 | Simulation           | Flexpde            |
 
 
-:::
+:::</code></pre>
+</section>
+<section id="메뉴바에-내용-넣기" class="level3">
+<h3 class="anchored" data-anchor-id="메뉴바에-내용-넣기">7. 메뉴바에 내용 넣기</h3>
+<ul>
+<li>메뉴1, 2를 나누는 것은 #A, #B 로 나눔</li>
+</ul>
+<pre><code>
+# AAA
 
+Sidebar content 
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see &lt;https://quarto.org&gt;.
+
+
+
+# BBB
+
+Sidebar content 
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see &lt;https://quarto.org&gt;.</code></pre>
+</section>
+<section id="테이블-넣기" class="level3">
+<h3 class="anchored" data-anchor-id="테이블-넣기">8. 테이블 넣기</h3>
+<pre><code>knitr::kable(mtcars) # kable
+
+DT::datatable(mtcars) # DT
+
+reactable::reactable(mtcars) # reactable</code></pre>
+<p><a href="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/table.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/table.png" class="img-fluid"></a></p>
+</section>
+<section id="벨류-박스" class="level3">
+<h3 class="anchored" data-anchor-id="벨류-박스">9. 벨류 박스</h3>
+<pre><code>
+# value box
+## Row 
+
+::: {.cell content='valuebox' title='Articles per day' icon='pencil' color='primary'}
+
+```{.r .cell-code}
+list(
+  value = 343
+)</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>$value
+[1] 343</code></pre>
+</div>
+<p>:::</p>
+<div class="cell" content="valuebox" title="Comments per day">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">icon =</span> <span class="st">"chat"</span>,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">color =</span> <span class="st">"primary"</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="dv">116</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>$icon
+[1] "chat"
+
+$color
+[1] "primary"
+
+$value
+[1] 116</code></pre>
+</div>
+</div>
+<div class="cell" content="valuebox" title="Spam per day">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">icon =</span> <span class="st">"trash"</span>,</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">color =</span> <span class="st">"danger"</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="dv">222</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>$icon
+[1] "trash"
+
+$color
+[1] "danger"
+
+$value
+[1] 222</code></pre>
+</div>
+</div>
+<pre><code>
+![](https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/valuebox.png)
+
+-   아이콘 박스
+
+&lt;https://icons.getbootstrap.com/&gt;
+
+
+### 10. 테마 바꾸기
+
+[테마종류] &lt;https://bootswatch.com/&gt;
+
+- YAML 에 넣기
 </code></pre>
+<p>theme: cosmo ```</p>
 </section>
 </section>
 
@@ -1071,7 +1170,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"openEffect":"zoom","selector":".lightbox","loop":false,"closeEffect":"zoom","descPosition":"bottom"});
+<script>var lightboxQuarto = GLightbox({"selector":".lightbox","loop":false,"closeEffect":"zoom","openEffect":"zoom","descPosition":"bottom"});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;
