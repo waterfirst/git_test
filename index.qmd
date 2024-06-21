@@ -16,7 +16,7 @@ execute:
   warning : false
   error : false
   echo : true
-  
+
 lightbox: true
 ---
 
@@ -493,4 +493,251 @@ File - New Project - Versioin Control - github 레포지토리 주소 넣기
 
 ![](images/github_연동.jpg)
 
-<끝>
+## 8. GPT API로 사용하기
+
+-   OPENAI API 사이트 방문
+
+    <https://openai.com/index/openai-api/> <https://platform.openai.com/apps>
+
+```         
+library("TheOpenAIR")
+openai_api_key("sk-proj-***")
+
+
+chat("강한 왕자와 약한 공주에 대한 짧고 재미있는 이야기를 한국어로 써 보세요.",  model="gpt-3.5-turbo-0125",
+     temperature=0.8)
+```
+
+## 9. Dashboard 만들기
+
+\[관련자료\] <https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/index.html>
+
+![](https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/layout.png)
+
+### 1. YAML
+
+```         
+---
+title: "Display 기술 소개"
+format: dashboard
+editor: visual
+---
+```
+
+### 2. 카드 나누기
+
+```         
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+
+## Row {height=70%}
+
+:::{.card}
+Card 1
+:::
+
+## Row {height=30%}
+
+### Column {width=40%}
+:::{.card}
+Card 2-1
+:::
+
+### Column {width=60%}
+:::{.card}
+Card 2-2
+:::
+```
+
+### 3. TABSET 넣기
+
+```         
+uarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+
+## Row {height=70%}
+
+:::{.card}
+Card 1
+:::
+
+## Row {height=30%}
+
+### Column {width=60%}
+#### Row {.tabset}
+
+:::{.card}
+Card 2-1
+:::
+
+:::{.card}
+Card 2-2
+:::
+
+:::{.card}
+Card 2-3
+:::
+
+### Column {width=40%}
+
+:::{.card}
+Card 3-1
+:::
+```
+
+### 4. 헤더에 링크 넣기
+
+-   YAML에 넣기
+
+```         
+---
+format:
+  dashboard:
+     nav-buttons:
+      - icon: github
+        href: https://github.com/waterfirst/sci_journal/
+        aria-label: GitHub
+      - icon: gitlab
+        href: https://www.knowledgepen.com/
+        aria-label: 지식펜
+---
+```
+
+### 5. 로고 넣기
+
+-   YAML에 넣기
+
+```         
+---
+logo: images/logo.png
+---
+```
+
+### 6. 사이드바에 넣기
+
+-   개인 프로필 넣기
+
+```         
+
+#  {.sidebar}
+
+This dashboard displays an overview of the thesis guidance process.:
+
+**강사: [Choi Pro](https://scholar.google.co.kr/citations?user=RUPcxioAAAAJ&hl=ko)**
+
+**Tools : R, Quarto**
+
+<br>
+
+::: {.callout-note collapse="true"}
+## 강사 프로필
+
+디스플레이 전문가 \n응용물리/화학/플라즈마/유기재료/광학/기기분석/시뮬레이션
+
+|                      |                    |
+|:---------------------|:-------------------|
+| **이 력**            | **내용**           |
+| 경 력                |                    |
+| LCD                  | 유기재료, 광학     |
+| OLED                 | Dry Etch, 포토재료 |
+| Micro LED            | Prining 공정, 재료 |
+| 빅데이터 분석기사    | R                  |
+| Simulation           | Flexpde            |
+
+
+:::
+```
+
+### 7. 메뉴바에 내용 넣기
+
+-   메뉴1, 2를 나누는 것은 #A, #B 로 나눔
+
+```         
+
+# AAA
+
+Sidebar content 
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+
+
+# BBB
+
+Sidebar content 
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+```
+
+### 8. 테이블 넣기
+
+```         
+knitr::kable(mtcars) # kable
+
+DT::datatable(mtcars) # DT
+
+reactable::reactable(mtcars) # reactable
+```
+
+![](https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/table.png)
+
+### 9. 벨류 박스
+
+```         
+
+# value box
+## Row 
+
+```{r}
+#| content: valuebox
+#| title: "Articles per day"
+#| icon: pencil
+#| color: primary
+list(
+  value = 343
+)
+```
+
+```{r}
+#| content: valuebox
+#| title: "Comments per day"
+list(
+  icon = "chat",
+  color = "primary",
+  value = 116
+)
+```
+
+```{r}
+#| content: valuebox
+#| title: "Spam per day"
+list(
+  icon = "trash",
+  color = "danger",
+  value = 222
+)
+```
+```
+
+![](https://blog.zarathu.com/posts/2023-12-11-quarto-dashboard/img/valuebox.png)
+
+-   아이콘 박스
+
+<https://icons.getbootstrap.com/>
+
+
+### 10. 테마 바꾸기
+
+[테마종류] <https://bootswatch.com/>
+
+- YAML 에 넣기
+
+```
+theme: cosmo
+```
+
