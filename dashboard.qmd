@@ -1,0 +1,204 @@
+---
+title: "Display 기술 소개"
+format:
+  dashboard:
+     nav-buttons:
+      - icon: github
+        href: https://github.com/waterfirst/sci_journal/
+        aria-label: airplane
+      - icon: gitlab
+        href: https://www.knowledgepen.com/
+        aria-label: 지식펜
+logo: images/logo.png
+editor: visual
+theme: cosmo
+---
+
+
+
+#  {.sidebar}
+
+This dashboard displays an overview of the thesis guidance process.:
+
+**강사: [Choi Pro](https://scholar.google.co.kr/citations?user=RUPcxioAAAAJ&hl=ko)**
+
+**Tools : R, Quarto**
+
+<br>
+
+::: {.callout-note collapse="true"}
+## 강사 프로필
+
+디스플레이 전문가 \n응용물리/화학/플라즈마/유기재료/광학/기기분석/시뮬레이션
+
+|                      |                    |
+|:---------------------|:-------------------|
+| **이 력**            | **내용**           |
+| 서울대학교           | 응용화학           |
+| 고려대학교 석사/박사 | 응용물리           |
+| 경 력                |                    |
+| LCD                  | 유기재료, 광학     |
+| OLED                 | Dry Etch, 포토재료 |
+| Micro LED            | Prining 공정, 재료 |
+| 빅데이터 분석기사    | R                  |
+| Simulation           | Flexpde            |
+
+Source: [CV](https://github.com/waterfirst/cv).
+:::
+
+
+
+
+# AAA
+
+Sidebar content 
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+
+## Row {height=70%}
+
+:::{.card}
+Card 1
+:::
+
+## Row {height=30%}
+
+### Column {width=60%}
+#### Row {.tabset}
+
+:::{.card}
+Card 2-1
+:::
+
+:::{.card}
+Card 2-2
+:::
+
+:::{.card}
+Card 2-3
+:::
+
+### Column {width=40%}
+
+:::{.card}
+Card 3-1
+:::
+
+## Row 
+
+```{r}
+#| content: valuebox
+#| title: "Articles per day"
+#| icon: pencil
+#| color: "purple"
+list(
+  value = 343
+)
+```
+
+```{r}
+#| content: valuebox
+#| title: "Comments per day"
+list(
+  icon = "chat",
+  color = "green",
+  value = 116
+)
+```
+
+```{r}
+#| content: valuebox
+#| title: "Spam per day"
+list(
+  icon = "trash",
+  color = "danger",
+  value = 222
+)
+```
+
+# BBB
+
+Sidebar content 
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+
+## Row {height=50%}
+
+:::{.card}
+Card 1
+:::
+
+## Row {height=50%}
+
+### Column {width=60%}
+#### Row {.tabset}
+
+:::{.card}
+Card 2-1
+:::
+
+:::{.card}
+Card 2-2
+:::
+
+:::{.card}
+Card 2-3
+:::
+
+### Column {width=40%}
+
+:::{.card}
+Card 3-1
+:::
+
+
+# knitr::kable
+
+```{r}
+
+df <- tibble::tribble(
+         ~국어,  ~수학,  ~영어,
+        "영어", "36", "34",
+        "수학", "수학", "수학",
+        "56", "34", "56"
+        )
+
+knitr::kable(df) 
+
+```
+
+
+# DT::datatable
+
+```{r}
+df <- tibble::tribble(
+   ~국어,  ~수학,  ~영어,
+  "영어", "36", "34",
+  "수학", "수학", "수학",
+  "56", "34", "56"
+  )
+
+DT::datatable(df) # DT
+```
+
+# reactable::reactable
+```{r}
+
+df <- tibble::tribble(
+   ~국어,  ~수학,  ~영어,
+  "영어", "36", "34",
+  "수학", "수학", "수학",
+  "56", "34", "56"
+  )
+
+
+reactable::reactable(df) # reactable
+```
+
+
+
+
